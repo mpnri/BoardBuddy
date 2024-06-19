@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"board-buddy/services/users/internal/users"
+	"board-buddy/services/users/module"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -11,10 +11,11 @@ type UsersHandlerImpl struct {
 	usersModule *users.UsersModule
 }
 
-func NewMeetHandlerImpl(usersModule *users.UsersModule) *UsersHandlerImpl {
+func NewUsersHandlerImpl(usersModule *users.UsersModule) *UsersHandlerImpl {
 	return &UsersHandlerImpl{usersModule}
 }
 
+// todo: restricted
 func (u *UsersHandlerImpl) LoadAllUsers(ctx echo.Context) error {
 	//todo: prepare context
 	users, err := u.usersModule.GetAllUsers(ctx)
