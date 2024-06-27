@@ -1,6 +1,7 @@
 package main
 
 import (
+	"board-buddy/router"
 	usersModels "board-buddy/services/users/models"
 	"fmt"
 	"os"
@@ -36,5 +37,5 @@ func main() {
 	fmt.Println("Hello Board Buddy")
 	db := InitDB()
 	e := echo.New()
-	SetupRoutes(e, db)
+	router.SetupRoutes(e, db)
 }
