@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"board-buddy/services/auth/module"
+	auth "board-buddy/services/auth/module"
 	globalUtils "board-buddy/services/utils"
 	"net/http"
 
@@ -24,7 +24,20 @@ func (h *AuthHandlerImpl) RegisterUser(ctx echo.Context) error {
 	}
 
 	user := req.User
-	err := h.authModule.RegisterUser(ctx, user.Username, user.Email, user.Password)
+	resUser, err := h.authModule.RegisterUser(ctx, user.Username, user.Email, user.Password)
 
-	return globalUtils.HandleEchoResponse(ctx, "OK", err)
+	return globalUtils.HandleEchoResponse(ctx, NewRegisterAndLoginUserResponse(resUser), err)
+}
+
+func (h *AuthHandlerImpl) LoginUser(ctx echo.Context) error {
+	ctx.Logger().Debug("LoginUser")
+	req := &LoginUserRequest{}
+	if err := req.bind(ctx); err != nil {
+		return ctx.JSON(http.StatusUnprocessableEntity, err)
+	}
+
+	reqUser := req.User
+	resUser, err := h.authModule.LoginUser(ctx, reqUser.Email, reqUser.Password)
+
+	return globalUtils.HandleEchoResponse(ctx, NewRegisterAndLoginUserResponse(resUser), err)
 }

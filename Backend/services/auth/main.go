@@ -17,4 +17,5 @@ func Setup(e *echo.Echo, db *gorm.DB) {
 	authHandler := handler.NewAuthHandlerImpl(authModule)
 
 	g.POST("/register", authHandler.RegisterUser)
+	g.POST("/login", authHandler.LoginUser)
 }

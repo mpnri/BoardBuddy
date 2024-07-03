@@ -1,8 +1,9 @@
-package globalUtils
+package utils
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 func HandleEchoResponse(ctx echo.Context, response any, err *echo.HTTPError) error {
@@ -11,3 +12,5 @@ func HandleEchoResponse(ctx echo.Context, response any, err *echo.HTTPError) err
 	}
 	return ctx.JSON(http.StatusOK, response)
 }
+
+
