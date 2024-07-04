@@ -2,6 +2,7 @@ package handler
 
 import (
 	"board-buddy/services/users/module"
+	"board-buddy/services/utils"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -24,4 +25,21 @@ func (u *UsersHandlerImpl) LoadAllUsers(ctx echo.Context) error {
 	}
 	//todo: use request and response binder
 	return ctx.JSON(http.StatusOK, users)
+}
+
+func (u *UsersHandlerImpl) LoadUser(ctx echo.Context) error {
+	req := &LoadUserRequest{}
+	if err := req.bind(ctx); err != nil {
+		return ctx.JSON(http.StatusUnprocessableEntity, err)
+	}
+
+	user, err := u.usersModule.GetUserByID(ctx, req.ID)
+	
+	return utils.HandleEchoResponse(ctx, NewLoadUserResponse(user), err)
+}
+
+func (u *UsersHandlerImpl) GetMe(ctx echo.Context) error {
+	user, err := u.usersModule.GetUserByID(ctx, utils.UserIDFromToken(ctx))
+	
+	return utils.HandleEchoResponse(ctx, NewLoadUserResponse(user), err)
 }
