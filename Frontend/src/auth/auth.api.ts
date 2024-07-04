@@ -27,6 +27,23 @@ const registerUser: RequestFunction<RequestRegisterUser, ApiUser> = (
       throw err;
     });
 
+/** */
+
+interface ResponseGetMe {
+  user: ApiUser;
+}
+
+const getMe: RequestFunction<object, ApiUser> = () =>
+  callRequest(subPathUrl + "me", "GET")
+    .then((res: ResponseGetMe) => {
+      return res.user;
+    })
+    .catch((err) => {
+      console.log("AuthAPI", "getMe", err);
+      throw err;
+    });
+
 export const AuthAPI = {
   registerUser,
+  getMe,
 };

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	usersModels "board-buddy/services/users/models"
+	"board-buddy/models"
 	"board-buddy/services/utils"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -30,16 +30,17 @@ func (r *RegisterUserRequest) bind(ctx echo.Context) *echo.HTTPError {
 }
 
 type RegisterAndLoginUserResponse struct {
-	User usersModels.ApiUser `json:"user"`
-	Token string `json:"token"`
+	User  models.ApiUser `json:"user"`
+	Token string              `json:"token"`
 }
 
-func NewRegisterAndLoginUserResponse(u *usersModels.User) *RegisterAndLoginUserResponse {
+func NewRegisterAndLoginUserResponse(u *models.User) *RegisterAndLoginUserResponse {
 	if u == nil {
 		return nil
 	}
 
 	var res RegisterAndLoginUserResponse
+	res.User.ID = u.ID
 	res.User.Username = u.Username
 	res.User.Email = u.Email
 	res.Token = utils.GenerateJWT(u.ID)

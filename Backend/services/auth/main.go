@@ -1,6 +1,7 @@
 package mainAuth
 
 import (
+	"board-buddy/router/middleware"
 	"board-buddy/services/auth/handler"
 	"board-buddy/services/auth/module"
 	users "board-buddy/services/users/module"
@@ -18,4 +19,8 @@ func Setup(e *echo.Echo, db *gorm.DB) {
 
 	g.POST("/register", authHandler.RegisterUser)
 	g.POST("/login", authHandler.LoginUser)
+
+	//* restricted
+	g.Use(middleware.CreateDefaultTokenMiddleWare())
+	g.GET("/me", authHandler.GetMe)
 }

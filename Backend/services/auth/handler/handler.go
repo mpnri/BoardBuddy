@@ -2,6 +2,7 @@ package handler
 
 import (
 	auth "board-buddy/services/auth/module"
+	usersHandler "board-buddy/services/users/handler"
 	"board-buddy/services/utils"
 	"net/http"
 
@@ -40,4 +41,9 @@ func (h *AuthHandlerImpl) LoginUser(ctx echo.Context) error {
 	resUser, err := h.authModule.LoginUser(ctx, req.Email, req.Password)
 
 	return utils.HandleEchoResponse(ctx, NewRegisterAndLoginUserResponse(resUser), err)
+}
+
+func (h *AuthHandlerImpl) GetMe(ctx echo.Context) error {
+	user, err := h.authModule.GetMe(ctx, utils.UserIDFromToken(ctx))
+	return utils.HandleEchoResponse(ctx, usersHandler.NewLoadUserResponse(user), err)
 }

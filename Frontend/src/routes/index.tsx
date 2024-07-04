@@ -4,11 +4,11 @@ import { Register } from "./Register/Register";
 import { Login } from "./Login/Login";
 import { AppRoutes } from "./utils";
 import { Home } from "./Home/Home";
-import { UsersAPI } from "../users/users.api";
 import { useAppDispatch } from "../utils/hooks.store";
 import { AuthActions } from "../auth/auth.slice";
 import { UsersActions } from "../users/users.slice";
 import { ReasonPhrases } from "http-status-codes";
+import { AuthAPI } from "../auth/auth.api";
 
 const routes = createBrowserRouter([
   { path: AppRoutes.Home, element: <Home /> },
@@ -20,7 +20,7 @@ export const MainRoutes: React.FC = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(AuthActions.setTokenChecking());
-    UsersAPI.getMe({})
+    AuthAPI.getMe({})
       .then((user) => {
         dispatch(AuthActions.setAuthenticatedUser(user));
         dispatch(UsersActions.setUsers([user]));

@@ -1,13 +1,13 @@
 package auth
 
 import (
+	"board-buddy/models"
 	"board-buddy/services/auth/utils"
-	usersModels "board-buddy/services/users/models"
 	users "board-buddy/services/users/module"
-	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
+	"net/http"
 )
 
 type AuthModule struct {
@@ -19,7 +19,7 @@ func NewAuthModule(db *gorm.DB, usersModule *users.UsersModule) *AuthModule {
 	return &AuthModule{db, usersModule}
 }
 
-func (m *AuthModule) RegisterUser(ctx echo.Context, userName string, email string, password string) (*usersModels.User, *echo.HTTPError) {
+func (m *AuthModule) RegisterUser(ctx echo.Context, userName string, email string, password string) (*models.User, *echo.HTTPError) {
 	hashedPassword, e := utils.HashPassword(password)
 	if e != nil {
 		return nil, echo.NewHTTPError(http.StatusUnprocessableEntity, e.Error())
@@ -31,8 +31,8 @@ func (m *AuthModule) RegisterUser(ctx echo.Context, userName string, email strin
 	return user, err
 }
 
-func (m *AuthModule) LoginUser(ctx echo.Context, email string, password string) (*usersModels.User, *echo.HTTPError) {
-	user := usersModels.User{Email: email}
+func (m *AuthModule) LoginUser(ctx echo.Context, email string, password string) (*models.User, *echo.HTTPError) {
+	user := models.User{Email: email}
 	if err := m.db.First(&user).Error; err != nil {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
@@ -41,4 +41,9 @@ func (m *AuthModule) LoginUser(ctx echo.Context, email string, password string) 
 		return nil, echo.NewHTTPError(http.StatusForbidden, "password in incorrect")
 	}
 	return &user, nil
+}
+
+func (m *AuthModule) GetMe(ctx echo.Context, userID uint) (*models.User, *echo.HTTPError) {
+	user, err := m.usersModule.GetUserByID(ctx, userID)
+	return user, err
 }
