@@ -22,57 +22,100 @@ export const Register: React.FC = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [emailValid, setEmailValid] = useState(true);
+  const [emailValid, setEmailValid] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [showEmailError, setShowEmailError] = useState(false);
-  const [showPasswordError, setShowPasswordError] = useState(false);
+  const [showUserError, setShowUserError] = useState(false);
+  const [showPassMatchError, setShowPassMatchError] = useState(false);
+  const [showPassError, setShowPassError] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
     setEmail(value);
     const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    if (isValid) {
+      event.target.setCustomValidity("");
+    }
     setEmailValid(isValid);
+    setShowEmailError(false);
+  };
+
+  const handleEmailError = (event: React.InvalidEvent<HTMLInputElement>) => {
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(event.target.value);
+    if (!isValid) {
+      setShowEmailError(true);
+      event.target.setCustomValidity(" ");
+    }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setPassword(value);
-    const isMatch = value === confirmPassword;
+    const password = e.target.value;
+    setPassword(password);
+    const isMatch = password === confirmPassword;
     setPasswordMatch(isMatch);
+
+    if (password.length === 0) {
+      setShowPassMatchError(true);
+      setShowPassError(true);
+      e.target.setCustomValidity(" ");
+    } else if (!isMatch) {
+      setShowPassMatchError(true);
+      setShowPassError(false);
+      e.target.setCustomValidity("");
+    } else {
+      setShowPassMatchError(false);
+      e.target.setCustomValidity("");
+    }
   };
 
   const handleConfirmPasswordChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const value = e.target.value;
-    setConfirmPassword(value);
-    const isMatch = value === password;
+    const confirmPass = e.target.value;
+    setConfirmPassword(confirmPass);
+    const isMatch = confirmPass === password;
     setPasswordMatch(isMatch);
+
+    if (confirmPass.length === 0 || !isMatch) {
+      setShowPassMatchError(true);
+      e.target.setCustomValidity(" ");
+    } else {
+      setShowPassMatchError(false);
+      e.target.setCustomValidity("");
+    }
+  };
+
+  const handleUsernameError = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.setCustomValidity(" ");
+    setShowUserError(true);
+  };
+
+  const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const username = e.target.value;
+    setUsername(username);
+
+    if (username.length > 0) {
+      setUsername(username);
+      setShowUserError(false);
+      e.target.setCustomValidity("");
+    }
   };
 
   //todo: fix any
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    if (!emailValid) {
-      alert("Your email address is not valid!");
-    } else if (!passwordMatch) {
-      alert("Your passwords do not match!");
-    } else if (password.length < 6) {
-      alert("Your passwords is too short!");
-    } else {
-      AuthAPI.registerUser({ username, email, password })
-        .then((user) => {
-          //todo: remove alerts!!
-          alert("Your have successfuly signed up!");
+    AuthAPI.registerUser({ username, email, password })
+      .then((user) => {
+        setShowSuccessMessage(true);
+        setTimeout(() => {
           dispatch(AuthActions.setAuthenticatedUser(user));
           dispatch(UsersActions.setUsers([user]));
-          setTimeout(() => {
-            navigate(AppRoutes.Home);
-          }, 500);
-        })
-        .catch(() => {});
-    }
+          navigate(AppRoutes.Home);
+        }, 1500);
+      })
+      .catch(() => {});
   };
 
   const handleRedirect = () => {
@@ -80,66 +123,83 @@ export const Register: React.FC = () => {
   };
 
   return (
-    <div className={styles.Container}>
-      <h2 className={styles.Title}>Trello</h2>
-      <h3 className={styles.SmallTitle}>Sign up to continue</h3>
-      <form onSubmit={handleSubmit}>
-        <div className={styles.FormGroup}>
-          <input
-            className={styles.Input}
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={handleEmailChange}
-            required
-          />
-
-          <input
-            className={styles.Input}
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-
-          <input
-            className={styles.Input}
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={handlePasswordChange}
-            required
-          />
-
-          <input
-            className={styles.Input}
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={handleConfirmPasswordChange}
-            required
-          />
-          {showPasswordError && (
-            <div className={styles.Error} style={{ color: "red" }}>
-              Passwords do not match!
-            </div>
-          )}
-          {showEmailError && (
-            <div className={styles.Error} style={{ color: "red" }}>
-              Please enter a valid email address.
-            </div>
-          )}
+    <div className={styles.MainContainer}>
+      <div className={styles.LeftContainer}></div>
+      <div className={styles.Container}>
+        <div className={styles.ImageContainer}>
+          <img src="./src/assets/trello.png" alt="trello icon" />
+          <h2 className={styles.Title}>Trello</h2>
         </div>
-        <button type="submit">Sign Up</button>
-        <button
-          className={styles.BackToLoginButton}
-          type="button"
-          onClick={handleRedirect}
-        >
-          Already have an account? Log in
-        </button>
-      </form>
+        <h3 className={styles.SmallTitle}>Sign up to continue</h3>
+        <form onSubmit={handleSubmit}>
+          <div className={styles.FormGroup}>
+            <input
+              className={`${styles.Input} ${!emailValid && showEmailError ? styles.InputError : ""}`}
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={handleEmailChange}
+              onInvalid={handleEmailError}
+              required
+            />
+            {showEmailError && !emailValid && (
+              <p className={styles.EmailError}>{"Your email is invalid!"}</p>
+            )}
+            <input
+              className={styles.Input}
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={handleUserChange}
+              onInvalid={handleUsernameError}
+              required
+            />
+            {showUserError && (
+              <p className={styles.EmailError}>{"Enter your username!"}</p>
+            )}
+            <input
+              className={styles.Input}
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={handlePasswordChange}
+              onInvalid={handlePasswordChange}
+              required
+            />
+            {showPassError && (
+              <p className={styles.EmailError}>{"Enter your password!"}</p>
+            )}
+            <input
+              className={styles.Input}
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={handleConfirmPasswordChange}
+              onInvalid={handleConfirmPasswordChange}
+              required
+            />
+            {showPassMatchError && (
+              <p className={styles.EmailError}>
+                {"Your passwords don't match!"}
+              </p>
+            )}
+            {showSuccessMessage && (
+              <p className={styles.Success}>
+                {"You have successfuly signed up!"}
+              </p>
+            )}
+          </div>
+          <button type="submit">Sign Up</button>
+          <button
+            className={styles.BackToLoginButton}
+            type="button"
+            onClick={handleRedirect}
+          >
+            Already have an account? Log in
+          </button>
+        </form>
+      </div>
+      <div className={styles.RightContainer}></div>
     </div>
   );
 };
