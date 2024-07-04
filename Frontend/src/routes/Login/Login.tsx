@@ -2,11 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppRoutes } from "../utils";
 import styles from "./Login.module.scss";
-import { useAppSelector } from "../../utils/hooks.store";
+import { useAppDispatch, useAppSelector } from "../../utils/hooks.store";
 import { authStateSelector } from "../../auth/auth.selector";
 import { AuthState } from "../../auth/auth.utils";
+import { AuthAPI } from "../../auth/auth.api";
+import { AuthActions } from "../../auth/auth.slice";
+import { UsersActions } from "../../users/users.slice";
 
 export const Login: React.FC = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const authState = useAppSelector(authStateSelector);
   useEffect(() => {
@@ -14,75 +18,113 @@ export const Login: React.FC = () => {
       navigate(AppRoutes.Home);
     }
   }, [authState]);
-  
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  
+  const [showUserError, setShowUserError] = useState(false);
+  const [showPassError, setShowPassError] = useState(false);
 
   const handleSignUpRedirect = () => {
     navigate(AppRoutes.REGISTER);
   };
 
+  const handleEmailError = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.setCustomValidity(" ");
+    setShowUserError(true);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const email = e.target.value;
+    setEmail(email);
+    if (email.length > 0) {
+      setShowUserError(false);
+      e.target.setCustomValidity("");
+    }
+  };
+
+  const handlePasswordError = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.setCustomValidity(" ");
+    setShowPassError(true);
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const password = e.target.value;
+    setPassword(password);
+    if (password.length > 0) {
+      setShowUserError(false);
+      e.target.setCustomValidity("");
+    }
+  };
+
   //todo: implement
   const handleSubmit = (event: any) => {
-    // event.preventDefault();
-    // setError("");
-    // try {
-    //   const response = await axios.post(
-    //     "https://api.trello.com/1/authenticate",
-    //     {
-    //       username,
-    //       password,
-    //     }
-    //   );
-    //   // Assuming the response contains a token
-    //   const { token } = response.data;
-    //   // Save the token (consider using more secure storage in a real app)
-    //   localStorage.setItem("trelloToken", token);
-    //   // Redirect to the main app page
-    //   // history.push('/dashboard');
-    // } catch (error) {
-    //   setError("Invalid login credentials. Please try again.");
-    // }
+    event.preventDefault();
+    setError("");
+    AuthAPI.loginUser({ email, password })
+      .then((user) => {
+        setTimeout(() => {
+          dispatch(AuthActions.setAuthenticatedUser(user));
+          dispatch(UsersActions.setUsers([user]));
+          navigate(AppRoutes.Home);
+        }, 500);
+      })
+      .catch(() => {});
   };
 
   return (
-    <div className={styles.Container}>
-      <h2 className={styles.Title}>Trello</h2>
-      <h3 className={styles.SmallTitle}>Login to continue</h3>
-      {/* todo: refactor to div */}
-      <form onSubmit={handleSubmit}>
-        <div className={styles.FormGroup}>
-          {/* <label className={styles.Label}>Email:</label> */}
-          <input
-          className={styles.Input}
-            type="username"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
+    <div className={styles.MainContainer}>
+      <div className={styles.LeftContainer}></div>
+      <div className={styles.Container}>
+        <div className={styles.ImageContainer}>
+          <img src="./src/assets/trello.png" alt="trello icon" />
+          <h2 className={styles.Title}>Trello</h2>
         </div>
-        <div className={styles.FormGroup}>
-          {/* <label className={styles.Label}>Password:</label> */}
-          <input
-            className={styles.Input}
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+
+        <h3 className={styles.SmallTitle}>Login to continue</h3>
+        {/* todo: refactor to div */}
+        <form onSubmit={handleSubmit}>
+          <div className={styles.FormGroup}>
+            {/* <label className={styles.Label}>Email:</label> */}
+            <input
+              className={styles.Input}
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={handleEmailChange}
+              onInvalid={handleEmailError}
+              required
+            />
+            {showUserError && (
+              <p className={styles.EmailError}>{"Enter your email!"}</p>
+            )}
+          </div>
+          <div className={styles.FormGroup}>
+            {/* <label className={styles.Label}>Password:</label> */}
+            <input
+              className={styles.Input}
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={handlePasswordChange}
+              onInvalid={handlePasswordError}
+              required
+            />
+            {showPassError && (
+              <p className={styles.EmailError}>{"Enter your password!"}</p>
+            )}
+          </div>
+          {error && <p className={styles.Error}>{error}</p>}
+          <button className={styles.SubmitButton} type="submit">
+            Login
+          </button>
+        </form>
+        <div className={styles.CantLogin}>
+          <label>Cant log in?</label>
+          <button onClick={handleSignUpRedirect}>Create an account</button>
         </div>
-        {error && <p className={styles.Error}>{error}</p>}
-        <button type="submit">Login</button>
-      </form>
-      <div className={styles.CantLogin}>
-        <label>Can't log in?</label>
-        <button onClick={handleSignUpRedirect}>Create an account</button>
       </div>
+      <div className={styles.RightContainer}></div>
     </div>
   );
 };

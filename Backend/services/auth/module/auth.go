@@ -32,8 +32,8 @@ func (m *AuthModule) RegisterUser(ctx echo.Context, userName string, email strin
 }
 
 func (m *AuthModule) LoginUser(ctx echo.Context, email string, password string) (*models.User, *echo.HTTPError) {
-	user := models.User{Email: email}
-	if err := m.db.First(&user).Error; err != nil {
+	user := models.User{}
+	if err := m.db.Where("email = ?", email).First(&user).Error; err != nil {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	isTheSameUser := utils.CheckPassword(user.PasswordHash, password)

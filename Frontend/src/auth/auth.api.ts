@@ -29,6 +29,29 @@ const registerUser: RequestFunction<RequestRegisterUser, ApiUser> = (
 
 /** */
 
+interface RequestLoginUser {
+  email: string;
+  password: string;
+}
+
+interface ResponseLoginUser {
+  user: ApiUser;
+  token: string;
+}
+
+const loginUser: RequestFunction<RequestLoginUser, ApiUser> = (requestBody) =>
+  callRequest(subPathUrl + "login", "POST", requestBody)
+    .then((res: ResponseLoginUser) => {
+      document.cookie = `jwt=${res.token}; path=/; secure; samesite=strict`;
+      return res.user;
+    })
+    .catch((err) => {
+      console.log("AuthAPI", "loginUser", err);
+      throw err;
+    });
+
+/** */
+
 interface ResponseGetMe {
   user: ApiUser;
 }
@@ -45,5 +68,6 @@ const getMe: RequestFunction<object, ApiUser> = () =>
 
 export const AuthAPI = {
   registerUser,
+  loginUser,
   getMe,
 };
