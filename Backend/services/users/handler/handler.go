@@ -38,8 +38,3 @@ func (u *UsersHandlerImpl) LoadUser(ctx echo.Context) error {
 	return utils.HandleEchoResponse(ctx, NewLoadUserResponse(user), err)
 }
 
-func (u *UsersHandlerImpl) GetMe(ctx echo.Context) error {
-	user, err := u.usersModule.GetUserByID(ctx, utils.UserIDFromToken(ctx))
-	
-	return utils.HandleEchoResponse(ctx, NewLoadUserResponse(user), err)
-}

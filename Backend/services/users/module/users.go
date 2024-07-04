@@ -1,7 +1,7 @@
 package users
 
 import (
-	"board-buddy/services/users/models"
+	"board-buddy/models"
 	"errors"
 	"net/http"
 

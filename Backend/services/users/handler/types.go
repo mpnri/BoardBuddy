@@ -1,7 +1,7 @@
 package handler
 
 import (
-	usersModels "board-buddy/services/users/models"
+	"board-buddy/models"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -27,15 +27,16 @@ func (r *LoadUserRequest) bind(ctx echo.Context) *echo.HTTPError {
 }
 
 type LoadUserResponse struct {
-	User usersModels.ApiUser `json:"user"`
+	User models.ApiUser `json:"user"`
 }
 
-func NewLoadUserResponse(u *usersModels.User) *LoadUserResponse {
+func NewLoadUserResponse(u *models.User) *LoadUserResponse {
 	if u == nil {
 		return nil
 	}
 
 	var res LoadUserResponse
+	res.User.ID = u.ID
 	res.User.Username = u.Username
 	res.User.Email = u.Email
 	return &res

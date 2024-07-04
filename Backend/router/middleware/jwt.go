@@ -51,8 +51,8 @@ func JWTWithConfig(config JWTConfig) echo.MiddlewareFunc {
 				return c.JSON(http.StatusForbidden, ErrJWTInvalid)
 			}
 			if claims, ok := token.Claims.(*utils.JwtCustomClaims); ok && token.Valid {
-				userID := claims.Id
-				c.Set("user", userID)
+				userID := claims.UserID
+				c.Set("user_id", userID)
 				return next(c)
 			}
 			// return c.JSON(http.StatusForbidden, utils.NewError(ErrJWTInvalid))
@@ -83,4 +83,10 @@ func jwtFromCookie() jwtExtractor {
 		return auth.Value, nil
 
 	}
+}
+
+func CreateDefaultTokenMiddleWare() echo.MiddlewareFunc {
+	return JWTWithConfig(JWTConfig{
+		SigningKey: []byte(utils.GetJWTSecret()),
+	})
 }
