@@ -2,7 +2,7 @@ package handler
 
 import (
 	auth "board-buddy/services/auth/module"
-	globalUtils "board-buddy/services/utils"
+	"board-buddy/services/utils"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -23,10 +23,11 @@ func (h *AuthHandlerImpl) RegisterUser(ctx echo.Context) error {
 		return ctx.JSON(http.StatusUnprocessableEntity, err)
 	}
 
-	user := req.User
-	resUser, err := h.authModule.RegisterUser(ctx, user.Username, user.Email, user.Password)
+	resUser, err := h.authModule.RegisterUser(
+		ctx, req.Username, req.Email, req.Password,
+	)
 
-	return globalUtils.HandleEchoResponse(ctx, NewRegisterAndLoginUserResponse(resUser), err)
+	return utils.HandleEchoResponse(ctx, NewRegisterAndLoginUserResponse(resUser), err)
 }
 
 func (h *AuthHandlerImpl) LoginUser(ctx echo.Context) error {
@@ -36,8 +37,7 @@ func (h *AuthHandlerImpl) LoginUser(ctx echo.Context) error {
 		return ctx.JSON(http.StatusUnprocessableEntity, err)
 	}
 
-	reqUser := req.User
-	resUser, err := h.authModule.LoginUser(ctx, reqUser.Email, reqUser.Password)
+	resUser, err := h.authModule.LoginUser(ctx, req.Email, req.Password)
 
-	return globalUtils.HandleEchoResponse(ctx, NewRegisterAndLoginUserResponse(resUser), err)
+	return utils.HandleEchoResponse(ctx, NewRegisterAndLoginUserResponse(resUser), err)
 }

@@ -1,10 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Register.module.scss";
 import { AppRoutes } from "../utils";
+import { AuthAPI } from "../../auth/auth.api";
+import { useAppDispatch, useAppSelector } from "../../utils/hooks.store";
+import { AuthActions } from "../../auth/auth.slice";
+import { UsersActions } from "../../users/users.slice";
+import { authStateSelector } from "../../auth/auth.selector";
+import { AuthState } from "../../auth/auth.utils";
 
 export const Register: React.FC = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const authState = useAppSelector(authStateSelector);
+  useEffect(() => {
+    if (authState === AuthState.Success) {
+      navigate(AppRoutes.Home);
+    }
+  }, [authState]);
+
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -47,13 +61,22 @@ export const Register: React.FC = () => {
     } else if (password.length < 6) {
       alert("Your passwords is too short!");
     } else {
-      alert("Your have successfuly signed up!");
-      navigate("/login");
+      AuthAPI.registerUser({ username, email, password })
+        .then((user) => {
+          //todo: remove alerts!!
+          alert("Your have successfuly signed up!");
+          dispatch(AuthActions.setAuthenticatedUser(user));
+          dispatch(UsersActions.setUsers([user]));
+          setTimeout(() => {
+            navigate(AppRoutes.Home);
+          }, 500);
+        })
+        .catch(() => {});
     }
   };
 
   const handleRedirect = () => {
-    navigate(`/${AppRoutes.LOGIN}`);
+    navigate(AppRoutes.LOGIN);
   };
 
   return (

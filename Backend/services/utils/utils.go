@@ -12,5 +12,3 @@ func HandleEchoResponse(ctx echo.Context, response any, err *echo.HTTPError) err
 	}
 	return ctx.JSON(http.StatusOK, response)
 }
-
-

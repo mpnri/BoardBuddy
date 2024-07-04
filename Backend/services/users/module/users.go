@@ -2,6 +2,7 @@ package users
 
 import (
 	"board-buddy/services/users/models"
+	"errors"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -22,6 +23,18 @@ func (m *UsersModule) GetAllUsers(ctx echo.Context) ([]*models.User, error) {
 		return nil, echo.ErrInternalServerError
 	}
 	return users, nil
+}
+
+func (m *UsersModule) GetUserByID(ctx echo.Context, id uint) (*models.User, *echo.HTTPError) {
+	var user *models.User
+	if err := m.db.Find(&user, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, echo.ErrNotFound
+		}
+		ctx.Logger().Debug("load user err", err)
+		return nil, echo.ErrInternalServerError
+	}
+	return user, nil
 }
 
 type CreateUserData struct {

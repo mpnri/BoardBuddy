@@ -1,16 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppRoutes } from "../utils";
 import styles from "./Login.module.scss";
+import { useAppSelector } from "../../utils/hooks.store";
+import { authStateSelector } from "../../auth/auth.selector";
+import { AuthState } from "../../auth/auth.utils";
 
 export const Login: React.FC = () => {
+  const navigate = useNavigate();
+  const authState = useAppSelector(authStateSelector);
+  useEffect(() => {
+    if (authState === AuthState.Success) {
+      navigate(AppRoutes.Home);
+    }
+  }, [authState]);
+  
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  
 
   const handleSignUpRedirect = () => {
-    navigate("/" + AppRoutes.REGISTER);
+    navigate(AppRoutes.REGISTER);
   };
 
   //todo: implement
