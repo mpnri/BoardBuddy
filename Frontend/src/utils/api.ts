@@ -3,7 +3,7 @@ const EndPoint = "http://localhost:3005/";
 type RequestMethod = "GET" | "POST" | "PUT" | "DELETE";
 
 export interface RequestFunction<Req, Res> {
-  (requestBody: Req): Promise<Res>;
+  (data: Req): Promise<Res>;
 }
 
 export function callRequest(
@@ -16,13 +16,13 @@ export function callRequest(
     method,
     headers: {
       "Content-Type": "application/json",
-      // Authorization: `Bearer ${"jwtToken"}`,
     },
     // mode
     body: JSON.stringify(body),
     credentials: "include",
   }).then((res) => {
     if (res.ok) {
+      console.log(`Res (${subUrl}, ${method}):`)
       return res.json();
     }
     res.text().then((v) => {

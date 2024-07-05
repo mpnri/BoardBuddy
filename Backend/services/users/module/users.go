@@ -17,7 +17,7 @@ func NewUsersModule(db *gorm.DB) *UsersModule {
 	return &UsersModule{db}
 }
 
-func (m *UsersModule) GetAllUsers(ctx echo.Context) ([]*models.User, error) {
+func (m *UsersModule) GetAllUsers(ctx echo.Context) ([]*models.User, *echo.HTTPError) {
 	var users []*models.User
 	if m.db.Limit(50).Find(&users).Error != nil {
 		return nil, echo.ErrInternalServerError
@@ -27,7 +27,7 @@ func (m *UsersModule) GetAllUsers(ctx echo.Context) ([]*models.User, error) {
 
 func (m *UsersModule) GetUserByID(ctx echo.Context, id uint) (*models.User, *echo.HTTPError) {
 	var user *models.User
-	if err := m.db.Find(&user, id).Error; err != nil {
+	if err := m.db.First(&user, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, echo.ErrNotFound
 		}

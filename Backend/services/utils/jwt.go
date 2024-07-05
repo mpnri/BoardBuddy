@@ -34,7 +34,7 @@ func GenerateJWT(UID uint) string {
 	return t
 }
 
-func UserIDFromToken(c echo.Context) uint {
+func GetUserIDFromToken(c echo.Context) uint {
 	id, ok := c.Get("user_id").(uint)
 	if !ok {
 		return 0

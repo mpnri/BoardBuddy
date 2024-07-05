@@ -20,6 +20,6 @@ func Setup(e *echo.Echo, db *gorm.DB) {
 
 	g.GET("", workspacesHandler.LoadAllWorkspaces)
 	g.POST("", workspacesHandler.CreateWorkspace)
-	g.GET("/id", workspacesHandler.LoadWorkspace)
-	g.DELETE("/id", workspacesHandler.DeleteWorkspace)
+	g.GET("/:id", workspacesHandler.LoadWorkspace)
+	g.DELETE("/:id", workspacesHandler.DeleteWorkspace)
 }
