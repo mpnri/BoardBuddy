@@ -2,6 +2,7 @@ package workspaces
 
 import (
 	"board-buddy/models"
+	boardsUtils "board-buddy/services/boards/utils"
 	users "board-buddy/services/users/module"
 	"errors"
 	"fmt"
@@ -22,7 +23,7 @@ func NewWorkspacesModule(db *gorm.DB, usersModule *users.UsersModule) *Workspace
 
 func (m *WorkspacesModule) GetAllWorkspaces(ctx echo.Context, userID uint) ([]*models.ApiWorkspace, *echo.HTTPError) {
 	var user models.User
-	if m.db.Limit(20).Preload("Workspaces").Find(&user, userID).Error != nil {
+	if m.db.Limit(20).Preload("Workspaces.Boards").Find(&user, userID).Error != nil {
 		return nil, echo.ErrInternalServerError
 	}
 
@@ -39,6 +40,7 @@ func (m *WorkspacesModule) GetAllWorkspaces(ctx echo.Context, userID uint) ([]*m
 			Description: w.Description,
 			AmIOwner:    w.OwnerID == userID,
 			AmIMember:   true,
+			Boards:      boardsUtils.MapBoardsToApiBoards(w.Boards),
 		})
 	}
 	return workspaces, nil
@@ -46,7 +48,7 @@ func (m *WorkspacesModule) GetAllWorkspaces(ctx echo.Context, userID uint) ([]*m
 
 func (m *WorkspacesModule) GetWorkspaceByID(ctx echo.Context, userID uint, wID uint) (*models.ApiWorkspace, *echo.HTTPError) {
 	var workspace *models.Workspace
-	if err := m.db.First(&workspace, wID).Error; err != nil {
+	if err := m.db.Preload("Boards").First(&workspace, wID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, echo.ErrNotFound
 		}
@@ -59,6 +61,7 @@ func (m *WorkspacesModule) GetWorkspaceByID(ctx echo.Context, userID uint, wID u
 		Description: workspace.Description,
 		AmIOwner:    workspace.OwnerID == userID,
 		AmIMember:   true,
+		Boards:      boardsUtils.MapBoardsToApiBoards(workspace.Boards),
 	}, nil
 }
 

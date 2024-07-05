@@ -12,13 +12,15 @@ type Workspace struct {
 	OwnerID     uint
 	Owner       User    `gorm:"foreignKey:OwnerID"`
 	Members     []*User `gorm:"many2many:workspace_members"`
+	Boards      []Board
 }
 
 // @API
 type ApiWorkspace struct {
-	ID          uint   `json:"id" validate:"required"`
-	Name        string `json:"name" validate:"required"`
-	Description string `json:"description"`
-	AmIOwner    bool   `json:"amIOwner"`
-	AmIMember   bool   `json:"amIMember"`
+	ID          uint       `json:"id" validate:"required"`
+	Name        string     `json:"name" validate:"required"`
+	Description string     `json:"description"`
+	AmIOwner    bool       `json:"amIOwner"`
+	AmIMember   bool       `json:"amIMember"`
+	Boards      []*ApiBoard `json:"boards"`
 }

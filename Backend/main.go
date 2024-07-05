@@ -1,8 +1,8 @@
 package main
 
 import (
-	"board-buddy/router"
 	"board-buddy/models"
+	"board-buddy/router"
 	"fmt"
 	"os"
 
@@ -23,7 +23,7 @@ func InitDB() *gorm.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	db.AutoMigrate(&models.User{}, &models.Workspace{})
+	db.AutoMigrate(&models.User{}, &models.Workspace{}, &models.Board{}, &models.Card{})
 
 	return db
 }
