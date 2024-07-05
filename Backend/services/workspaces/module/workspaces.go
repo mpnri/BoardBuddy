@@ -4,6 +4,7 @@ import (
 	"board-buddy/models"
 	users "board-buddy/services/users/module"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -20,12 +21,18 @@ func NewWorkspacesModule(db *gorm.DB, usersModule *users.UsersModule) *Workspace
 }
 
 func (m *WorkspacesModule) GetAllWorkspaces(ctx echo.Context, userID uint) ([]*models.ApiWorkspace, *echo.HTTPError) {
-	var ws []*models.Workspace
-	if m.db.Limit(20).Where(&models.Workspace{OwnerID: userID}).Find(&ws).Error != nil {
+	var user models.User
+	if m.db.Limit(20).Preload("Workspaces").Find(&user, userID).Error != nil {
 		return nil, echo.ErrInternalServerError
 	}
+
 	workspaces := []*models.ApiWorkspace{}
-	for _, w := range ws {
+	for _, w := range user.Workspaces {
+		if w == nil {
+			ctx.Logger().Warn("nil workspace for " + fmt.Sprint(userID))
+			continue
+		}
+
 		workspaces = append(workspaces, &models.ApiWorkspace{
 			ID:          w.ID,
 			Name:        w.Name,
