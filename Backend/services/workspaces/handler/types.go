@@ -2,29 +2,12 @@ package handler
 
 import (
 	"board-buddy/models"
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 //* LoadWorkspace
-
-type LoadWorkspaceRequest struct {
-	ID uint `json:"id" validate:"required"`
-}
-
-func (r *LoadWorkspaceRequest) bind(ctx echo.Context) *echo.HTTPError {
-	if err := ctx.Bind(r); err != nil {
-		ctx.Logger().Debug("context bind error", err)
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
-	}
-
-	if err := ctx.Validate(r); err != nil {
-		ctx.Logger().Debug("context validate error", err)
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
-	}
-
-	return nil
-}
 
 type LoadWorkspaceResponse struct {
 	Workspace models.ApiWorkspace `json:"workspace"`
@@ -36,6 +19,18 @@ func NewLoadWorkspaceResponse(w *models.ApiWorkspace) *LoadWorkspaceResponse {
 	}
 	var res LoadWorkspaceResponse
 	res.Workspace = *w
+	return &res
+}
+
+// * LoadAllWorkspaces
+
+type LoadAllWorkspaceResponse struct {
+	Workspaces []*models.ApiWorkspace `json:"workspaces"`
+}
+
+func NewLoadAllWorkspaceResponse(ws []*models.ApiWorkspace) *LoadAllWorkspaceResponse {
+	var res LoadAllWorkspaceResponse
+	res.Workspaces = ws
 	return &res
 }
 
@@ -60,22 +55,3 @@ func (r *CreateWorkspaceRequest) bind(ctx echo.Context) *echo.HTTPError {
 	return nil
 }
 
-//* DeleteWorkspace
-
-type DeleteWorkspaceRequest struct {
-	ID uint `json:"id" validate:"required"`
-}
-
-func (r *DeleteWorkspaceRequest) bind(ctx echo.Context) *echo.HTTPError {
-	if err := ctx.Bind(r); err != nil {
-		ctx.Logger().Debug("context bind error", err)
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
-	}
-
-	if err := ctx.Validate(r); err != nil {
-		ctx.Logger().Debug("context validate error", err)
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
-	}
-
-	return nil
-}

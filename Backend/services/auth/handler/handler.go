@@ -44,6 +44,6 @@ func (h *AuthHandlerImpl) LoginUser(ctx echo.Context) error {
 }
 
 func (h *AuthHandlerImpl) GetMe(ctx echo.Context) error {
-	user, err := h.authModule.GetMe(ctx, utils.UserIDFromToken(ctx))
+	user, err := h.authModule.GetMe(ctx, utils.GetUserIDFromToken(ctx))
 	return utils.HandleEchoResponse(ctx, usersHandler.NewLoadUserResponse(user), err)
 }

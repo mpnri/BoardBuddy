@@ -19,17 +19,27 @@ func NewWorkspacesModule(db *gorm.DB, usersModule *users.UsersModule) *Workspace
 	return &WorkspacesModule{db, usersModule}
 }
 
-func (m *WorkspacesModule) GetAllWorkspaces(ctx echo.Context, userID uint) ([]*models.Workspace, *echo.HTTPError) {
-	var workspaces []*models.Workspace
-	if m.db.Limit(20).Where(&models.Workspace{OwnerID: userID}).Find(&workspaces).Error != nil {
+func (m *WorkspacesModule) GetAllWorkspaces(ctx echo.Context, userID uint) ([]*models.ApiWorkspace, *echo.HTTPError) {
+	var ws []*models.Workspace
+	if m.db.Limit(20).Where(&models.Workspace{OwnerID: userID}).Find(&ws).Error != nil {
 		return nil, echo.ErrInternalServerError
+	}
+	workspaces := []*models.ApiWorkspace{}
+	for _, w := range ws {
+		workspaces = append(workspaces, &models.ApiWorkspace{
+			ID:          w.ID,
+			Name:        w.Name,
+			Description: w.Description,
+			AmIOwner:    w.OwnerID == userID,
+			AmIMember:   true,
+		})
 	}
 	return workspaces, nil
 }
 
 func (m *WorkspacesModule) GetWorkspaceByID(ctx echo.Context, userID uint, wID uint) (*models.ApiWorkspace, *echo.HTTPError) {
 	var workspace *models.Workspace
-	if err := m.db.Find(&workspace, wID).Error; err != nil {
+	if err := m.db.First(&workspace, wID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, echo.ErrNotFound
 		}

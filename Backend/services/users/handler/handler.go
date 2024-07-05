@@ -3,9 +3,9 @@ package handler
 import (
 	"board-buddy/services/users/module"
 	"board-buddy/services/utils"
-	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"net/http"
 )
 
 type UsersHandlerImpl struct {
@@ -16,25 +16,18 @@ func NewUsersHandlerImpl(usersModule *users.UsersModule) *UsersHandlerImpl {
 	return &UsersHandlerImpl{usersModule}
 }
 
-// todo: restricted
+// todo: add role for admin
 func (u *UsersHandlerImpl) LoadAllUsers(ctx echo.Context) error {
-	//todo: prepare context
 	users, err := u.usersModule.GetAllUsers(ctx)
-	if err != nil {
-		return err
-	}
-	//todo: use request and response binder
-	return ctx.JSON(http.StatusOK, users)
+	return utils.HandleEchoResponse(ctx, users, err)
 }
 
 func (u *UsersHandlerImpl) LoadUser(ctx echo.Context) error {
-	req := &LoadUserRequest{}
-	if err := req.bind(ctx); err != nil {
-		return ctx.JSON(http.StatusUnprocessableEntity, err)
+	uID, error := utils.GetUintParam(ctx, "id")
+	if error != nil {
+		return ctx.JSON(http.StatusUnprocessableEntity, error)
 	}
 
-	user, err := u.usersModule.GetUserByID(ctx, req.ID)
-	
+	user, err := u.usersModule.GetUserByID(ctx, uID)
 	return utils.HandleEchoResponse(ctx, NewLoadUserResponse(user), err)
 }
-

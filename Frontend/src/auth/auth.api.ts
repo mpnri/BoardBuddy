@@ -46,7 +46,7 @@ const loginUser: RequestFunction<RequestLoginUser, ApiUser> = (requestBody) =>
       return res.user;
     })
     .catch((err) => {
-      console.log("AuthAPI", "loginUser", err);
+      console.error("AuthAPI", "loginUser", err);
       throw err;
     });
 
@@ -62,7 +62,7 @@ const getMe: RequestFunction<object, ApiUser> = () =>
       return res.user;
     })
     .catch((err) => {
-      console.log("AuthAPI", "getMe", err);
+      console.error("AuthAPI", "getMe", err);
       throw err;
     });
 

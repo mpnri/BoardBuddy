@@ -17,5 +17,5 @@ func Setup(e *echo.Echo, db *gorm.DB) {
 	usersHandler := handler.NewUsersHandlerImpl(usersModule)
 
 	g.GET("", usersHandler.LoadAllUsers)
-	g.GET("/id", usersHandler.LoadUser)
+	g.GET("/:id", usersHandler.LoadUser)
 }
