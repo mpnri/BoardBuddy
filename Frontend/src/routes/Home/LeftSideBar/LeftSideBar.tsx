@@ -8,7 +8,6 @@ import {
   BsGrid3X3Gap,
   BsPeople,
   BsGear,
-  BsChevronDown,
 } from "react-icons/bs";
 import styles from "./LeftSideBar.module.scss";
 import clsx from "clsx";
