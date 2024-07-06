@@ -41,7 +41,7 @@ export const Login: React.FC = () => {
     if (isValid) {
       setShowEmailError(false);
       e.target.setCustomValidity("");
-    }else{
+    } else {
       setShowEmailError(true);
       e.target.setCustomValidity(" ");
     }
@@ -58,14 +58,13 @@ export const Login: React.FC = () => {
     if (password.length > 0) {
       setShowPassError(false);
       e.target.setCustomValidity("");
-    }else{
+    } else {
       setShowPassError(true);
       e.target.setCustomValidity(" ");
     }
   };
 
-  //todo: implement
-  const handleSubmit = (event: any) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError("");
     AuthAPI.loginUser({ email, password })
@@ -90,7 +89,7 @@ export const Login: React.FC = () => {
 
         <h3 className={styles.SmallTitle}>Login to continue</h3>
         {/* todo: refactor to div */}
-        <form onSubmit={handleSubmit}>
+        <form className={styles.Form} onSubmit={handleSubmit}>
           <div className={styles.FormGroup}>
             {/* <label className={styles.Label}>Email:</label> */}
             <input

@@ -1,11 +1,11 @@
-.left-sidebar {
+.LeftSidebar {
   background-color: #1D2125;
   color: #B6C2CF;
   padding: 20px;
   height: 90vh;
   width: 240px;
 
-  .nav-link {
+  .NavLink {
     color: #B6C2CF;
     padding: 8px 12px;
     display: flex;
@@ -31,7 +31,7 @@
     padding-left: 12px;
   }
 
-  .workspace-icon {
+  .WorkspaceIcon {
     background-color: #579DFF;
     color: #1D2125;
     width: 24px;
@@ -44,21 +44,21 @@
     font-weight: bold;
   }
 
-  .workspace-subnav {
+  .WorkspaceSubNav {
     padding-left: 10px;
   }
 
-  .accordion-item-transparent {
+  .AccordionItemTransparent {
     background-color: transparent;
     border: none; // Remove border from Accordion.Item
 
-    .accordion-header {
+    .AccordionHeader {
       background-color: transparent;
       color: #B6C2CF;
       border: none; // Remove border from Accordion.Header
       padding: 0;
 
-      .accordion-button {
+       > button {
         background-color: transparent;
         color: #B6C2CF;
         box-shadow: none;
@@ -81,7 +81,7 @@
       }
     }
 
-    .accordion-body {
+    .AccordionBody {
       background-color: transparent;
       padding: 0px 10px;
     }

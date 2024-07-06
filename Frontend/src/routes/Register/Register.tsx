@@ -38,7 +38,6 @@ export const Register: React.FC = () => {
     if (isValid) {
       event.target.setCustomValidity("");
       setShowEmailError(false);
-
     }
     setEmailValid(isValid);
   };
@@ -79,7 +78,7 @@ export const Register: React.FC = () => {
     const isMatch = confirmPass === password;
     setPasswordMatch(isMatch);
 
-    if (password.length>0 && !isMatch) {
+    if (password.length > 0 && !isMatch) {
       setShowPassMatchError(true);
       e.target.setCustomValidity(" ");
     } else {
@@ -104,8 +103,7 @@ export const Register: React.FC = () => {
     }
   };
 
-  //todo: fix any
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     AuthAPI.registerUser({ username, email, password })
       .then((user) => {
@@ -132,7 +130,7 @@ export const Register: React.FC = () => {
           <h2 className={styles.Title}>Trello</h2>
         </div>
         <h3 className={styles.SmallTitle}>Sign up to continue</h3>
-        <form onSubmit={handleSubmit}>
+        <form className={styles.Form} onSubmit={handleSubmit}>
           <div className={styles.FormGroup}>
             <input
               className={`${styles.Input} ${!emailValid && showEmailError ? styles.InputError : ""}`}
