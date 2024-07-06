@@ -4,7 +4,6 @@
   background-color: #1d2125 !important;
 
   .NavbarBrand {
-    // margin: 0px 30px;
     font-weight: bold;
     font-size: 1.5rem;
     display: flex;
@@ -23,14 +22,58 @@
     }
   }
 
-  .CreateBtn {
-    background-color: #145cc1;
+  .createBtn {
+    background-color: #184c8f;
     border: none;
     font-size: 0.9rem;
-    padding: 0.25rem 0.75rem;
+    padding: 0.5rem 0.7rem;
+    font-weight: bold;
 
-    &:hover {
+    &:active, &:hover {
       background-color: #265393;
+    }
+
+    &::after {
+      display: none;
+    }
+
+    .createMenu {
+      border: none;
+      padding: 0.5rem;
+      width: 340px;
+    }
+
+    .createMenuItem {
+      display: flex;
+      background-color: #265393;
+      align-items: flex-start;
+      padding: 0.75rem;
+      width: 100%;
+    }
+
+    .menuItemIcon {
+      font-size: 1.25rem;
+      margin-right: 1rem;
+      min-width: 20px;
+      display: flex;
+      justify-content: start;
+    }
+
+    .menuItemContent {
+      flex: 1;
+      min-width: 0; 
+    }
+
+    .menuItemTitle {
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+      word-wrap: break-word;
+    }
+
+    .menuItemDescription {
+      font-size: 0.875rem;
+      line-height: 1.2;
+      word-wrap: break-word;
     }
   }
 
@@ -59,17 +102,153 @@
     padding: 5px 10px;
   }
 
-  .NavDropdown {
+  .NavDropdownToggle{
     margin-right: 10px;
+    background:none;
+    box-shadow: none;
+    border: none;
+
     > a {
       color: #9fadbc !important;
       font-size: 0.9rem;
       padding: 0.5rem 0.75rem;
       transition: color 0.3s ease;
-
+      background:none;
+      box-shadow: none;
+      border: none;
+      
       &:hover {
         color: #ffffff !important;
       }
+    }
+  }
+
+  .NavDropdown {
+    margin-right: 5px;
+    background:none;
+    box-shadow: none;
+    border: none;
+    color: #9fadbc !important;
+    font-weight: 500;
+
+    > a {
+      font-size: 0.9rem;
+      padding: 0.5rem 0.75rem;
+      transition: color 0.3s ease;
+      background:none;
+      box-shadow: none;
+      border: none;
+      
+      &:hover {
+        color: #ffffff !important;
+      }
+    }
+  }
+
+  @media (max-width: 1060px) {
+    .SearchForm,
+    .CreateBtn {
+      display: none;
+    }
+  }
+}
+
+.dropdownMenu {
+  width: 304px;
+
+  .iconStyle {
+    width: 30px;
+  }
+}
+
+.profileDropdown {
+  .dropdownToggle {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 5px;
+    margin: 0px 5px;
+
+    &::after {
+      display: none;
+    }
+
+    &:hover, &:focus, &:active {
+      box-shadow: none;
+      background: none;
+
+      .userIcon {
+        color: #f8f8f8;
+        font-size: 20px;
+      }
+    }
+
+    .userIcon {
+      color: #a4a4a4;
+      font-size: 20px;
+    }
+  }
+
+  .InneruserIcon {
+    color: #a4a4a4;
+    font-size: 35px;
+  }
+}
+
+.regDropdown {
+  .regdropdownToggle {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 5px;
+    margin: 0px 5px;
+
+    &::after {
+      display: none;
+    }
+
+    &:hover, &:focus, &:active {
+      box-shadow: none;
+      background: none;
+
+      .regIcon {
+        color: #f8f8f8;
+        font-size: 20px;
+      }
+    }
+
+    .regIcon {
+      color: #a4a4a4;
+      font-size: 20px;
+    }
+  }
+}
+
+.queDropdown {
+  .quedropdownToggle {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 5px;
+    margin: 0px 5px;
+
+    &::after {
+      display: none;
+    }
+
+    &:hover, &:focus, &:active {
+      box-shadow: none;
+      background: none;
+
+      .queIcon {
+        color: #f8f8f8;
+        font-size: 20px;
+      }
+    }
+
+    .queIcon {
+      color: #a4a4a4;
+      font-size: 20px;
     }
   }
 }
