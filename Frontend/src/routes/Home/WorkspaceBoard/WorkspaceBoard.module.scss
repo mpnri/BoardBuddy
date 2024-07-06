@@ -22,4 +22,42 @@
     font-size: 20px;
     color: #afaeae;
   }
+
+  .Workspace {
+    margin-top: 20px;
+
+    .WorkspaceTitleWrapper {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .WorkspaceNameBadge {
+      width: 32px;
+      height: 32px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #579DFF;
+      border-radius: 3px;
+
+      p {
+        font-size: 20px;
+        color: #000;
+        text-transform: uppercase;
+        vertical-align: middle;
+        margin: 0;
+        padding: 0;
+      }
+    }
+
+    .WorkspaceName {
+      font-size: 16px;
+      color: #b6c2cf;
+      vertical-align: middle;
+      margin: 0;
+      padding: 0;
+    }
+  }
 }
