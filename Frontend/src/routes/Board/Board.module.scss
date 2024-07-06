@@ -1,0 +1,102 @@
+@use "~/styles/media.scss";
+
+.BoardWrapper {
+  font-family: sans-serif;
+  color: #172b4d;
+  background-color: #00a3e0;
+  display: flex;
+  align-items: start;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+//* id main
+.ListsWrapper {
+  display: flex;
+  align-items: start;
+}
+
+//* title
+.ListTitle {
+  font-weight: 600;
+  margin: 7px;
+  padding: 10px;
+}
+
+//* content
+.ListContent {
+  border-bottom: 1px solid #cecece;
+}
+
+.Editable {
+  user-select: none;
+  outline: none;
+  display: flex;
+  justify-content: space-between;
+}
+
+.Editing {
+  background: white;
+  color: #172b4d !important;
+  box-shadow: inset 0px 0px 0px 2px #0279bf;
+}
+
+.Editing:hover {
+  background: white !important;
+}
+
+.Card {
+  background: white;
+  border-bottom: 1px solid #aaa;
+  margin: 7px;
+  padding: 10px;
+  cursor: pointer !important;
+}
+
+.List {
+  /*   padding: 7px; */
+  min-width: 280px;
+  margin: 10px 5px;
+  position: relative;
+  background: #dfe1e6;
+}
+
+.AddList {
+  min-width: 280px;
+  margin: 10px 5px;
+  position: relative;
+  background: rgba(0, 0, 0, 0.12);
+  color: hsla(0, 0%, 100%, 0.8);
+}
+
+.Ghost {
+  opacity: 0.1;
+  color: #000;
+  background-color: #000;
+}
+
+.AddCard {
+  width: calc(100% - 35px);
+  display: inline-block;
+  padding: 10px;
+  margin-top: 0px;
+  color: gray;
+  text-decoration: none;
+  margin: 7px;
+  padding: 10px;
+  /*   border-bottom: 1px solid #dfe1e6; */
+}
+
+.AddCard:hover {
+  background-color: rgba(9, 30, 66, 0.13);
+}
+
+.Del {
+  font-weight: 600;
+  color: gray;
+}
+
+.Removable {
+  cursor: pointer;
+}

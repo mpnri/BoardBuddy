@@ -2,7 +2,10 @@
 
 .MainLayout {
   background-color: #1d2125;
-    @include media.md {
-        //todo:
-    }
+  width: 100%;
+  height: 100%;
+
+  @include media.md {
+    //todo:
+  }
 }
