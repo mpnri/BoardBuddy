@@ -22,4 +22,5 @@ func Setup(e *echo.Echo, db *gorm.DB) {
 	g.POST("", cardsHandler.CreateCard)
 	g.GET("/:id", cardsHandler.LoadCard)
 	g.DELETE("/:id", cardsHandler.DeleteCard)
+	g.PUT("/:id/title", cardsHandler.ChangeCardTitle)
 }

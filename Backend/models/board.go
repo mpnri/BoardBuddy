@@ -13,6 +13,7 @@ type Board struct {
 	Workspace   Workspace `gorm:"foreignKey:WorkspaceID"`
 
 	Cards []Card
+	Lists []List
 }
 
 // @API

@@ -46,11 +46,27 @@ func (u *CardsHandlerImpl) CreateCard(ctx echo.Context) error {
 
 func (u *CardsHandlerImpl) DeleteCard(ctx echo.Context) error {
 	userID := utils.GetUserIDFromToken(ctx)
-	wID, error := utils.GetUintParam(ctx, "id")
+	cID, error := utils.GetUintParam(ctx, "id")
 	if error != nil {
 		return ctx.JSON(http.StatusUnprocessableEntity, error)
 	}
 
-	err := u.cardsModule.DeleteCard(ctx, userID, wID)
+	err := u.cardsModule.DeleteCard(ctx, userID, cID)
+	return utils.HandleEchoResponse(ctx, "ok", err)
+}
+
+func (u *CardsHandlerImpl) ChangeCardTitle(ctx echo.Context) error {
+	userID := utils.GetUserIDFromToken(ctx)
+	cID, error := utils.GetUintParam(ctx, "id")
+	if error != nil {
+		return ctx.JSON(http.StatusUnprocessableEntity, error)
+	}
+
+	req := &ChangeCardTitleRequest{}
+	if err := req.bind(ctx); err != nil {
+		return ctx.JSON(http.StatusUnprocessableEntity, err)
+	}
+
+	err := u.cardsModule.ChangeCardTitle(ctx, userID, cID, req.Title)
 	return utils.HandleEchoResponse(ctx, "ok", err)
 }

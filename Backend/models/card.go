@@ -18,6 +18,7 @@ type Card struct {
 
 	ListID uint `gorm:"not null"`
 	List   List `gorm:"foreignKey:ListID"`
+	Order uint `gorm:"not null"`
 }
 
 // @API
@@ -29,4 +30,6 @@ type ApiCard struct {
 	BoardID uint `json:"boardID" validate:"required"`
 	CreatorID uint `json:"creatorID" validate:"required"`
 	ListID uint `json:"listID" validate:"required"`
+
+	Order uint `json:"order" validate:"required"`
 }

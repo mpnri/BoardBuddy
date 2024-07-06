@@ -54,3 +54,15 @@ func (r *CreateBoardRequest) bind(ctx echo.Context) *echo.HTTPError {
 
 	return nil
 }
+
+// * LoadAllListsByBoardID
+
+type LoadAllListsByBoardIDResponse struct {
+	Lists []*models.ApiList `json:"lists"`
+}
+
+func NewLoadAllListResponse(ls []*models.ApiList) *LoadAllListsByBoardIDResponse {
+	var res LoadAllListsByBoardIDResponse
+	res.Lists = ls
+	return &res
+}

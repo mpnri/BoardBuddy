@@ -4,7 +4,7 @@ import (
 	"board-buddy/models"
 	cardsUtils "board-buddy/services/cards/utils"
 	users "board-buddy/services/users/module"
-	"errors"	
+	"errors"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -80,9 +80,9 @@ func (m *CardsModule) CreateCard(ctx echo.Context, data *models.ApiCard) (*model
 	return &newCard, nil
 }
 
-func (m *CardsModule) DeleteCard(ctx echo.Context, userID uint, wID uint) *echo.HTTPError {
+func (m *CardsModule) DeleteCard(ctx echo.Context, userID uint, cID uint) *echo.HTTPError {
 	var card models.Card
-	if res := m.db.Take(&card, wID); res.Error != nil {
+	if res := m.db.Take(&card, cID); res.Error != nil {
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			return echo.ErrNotFound
 		}
@@ -94,7 +94,25 @@ func (m *CardsModule) DeleteCard(ctx echo.Context, userID uint, wID uint) *echo.
 	// 	return echo.NewHTTPError(http.StatusForbidden, "your not card owner")
 	// }
 
-	if res := m.db.Delete(&models.Card{}, wID); res.Error != nil {
+	if res := m.db.Delete(&models.Card{}, cID); res.Error != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, res.Error.Error())
+	}
+	return nil
+}
+
+func (m *CardsModule) ChangeCardTitle(ctx echo.Context, userID uint, cID uint, title string) *echo.HTTPError {
+	var card models.Card
+	if res := m.db.Take(&card, cID); res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return echo.ErrNotFound
+		}
+		return echo.NewHTTPError(http.StatusInternalServerError, res.Error.Error())
+	}
+
+	//todo: check membership in workspace
+
+	card.Title = title
+	if res := m.db.Model(&models.Card{}).Where("id = ?", card.ID).Updates(&card); res.Error != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, res.Error.Error())
 	}
 	return nil
