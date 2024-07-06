@@ -58,3 +58,14 @@ func (u *BoardsHandlerImpl) DeleteBoard(ctx echo.Context) error {
 	err := u.boardsModule.DeleteBoard(ctx, userID, wID)
 	return utils.HandleEchoResponse(ctx, "ok", err)
 }
+
+func (u *BoardsHandlerImpl) LoadAllListsByBoardID(ctx echo.Context) error {
+	userID := utils.GetUserIDFromToken(ctx)
+	bID, error := utils.GetUintParam(ctx, "id")
+	if error != nil {
+		return ctx.JSON(http.StatusUnprocessableEntity, error)
+	}
+
+	lists, err := u.boardsModule.GetAllListsByBoardID(ctx, userID, bID)
+	return utils.HandleEchoResponse(ctx, NewLoadAllListResponse(lists), err)
+}

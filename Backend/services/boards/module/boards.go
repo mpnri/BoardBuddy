@@ -3,6 +3,8 @@ package boards
 import (
 	"board-buddy/models"
 	cardUtils "board-buddy/services/cards/utils"
+	lists "board-buddy/services/lists/module"
+	listsUtils "board-buddy/services/lists/utils"
 	users "board-buddy/services/users/module"
 	"errors"
 	"net/http"
@@ -14,10 +16,11 @@ import (
 type BoardsModule struct {
 	db          *gorm.DB
 	usersModule *users.UsersModule
+	listsModule *lists.ListsModule
 }
 
-func NewBoardsModule(db *gorm.DB, usersModule *users.UsersModule) *BoardsModule {
-	return &BoardsModule{db, usersModule}
+func NewBoardsModule(db *gorm.DB, usersModule *users.UsersModule, listsModule *lists.ListsModule) *BoardsModule {
+	return &BoardsModule{db, usersModule, listsModule}
 }
 
 // func (m *BoardsModule) GetAllBoards(ctx echo.Context, userID uint) ([]*models.ApiBoard, *echo.HTTPError) {
@@ -54,9 +57,7 @@ func (m *BoardsModule) GetBoardByID(ctx echo.Context, userID uint, bID uint) (*m
 		return nil, echo.ErrInternalServerError
 	}
 
-	
 	//todo: check is member!
-	
 
 	return &models.ApiBoard{
 		ID:          board.ID,
@@ -86,6 +87,14 @@ func (m *BoardsModule) CreateBoard(ctx echo.Context, data *CreateBoardData) (*mo
 	if res := m.db.Create(&newBoard); res.Error != nil {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, res.Error.Error())
 	}
+
+	if list, err := m.listsModule.CreateList(ctx,
+		&models.ApiList{Title: "ToDo", BoardID: newBoard.ID}, data.UserID); err != nil {
+		// return nil, echo.NewHTTPError(http.StatusInternalServerError, res.Error.Error())
+		ctx.Logger().Debug("error creating first list")
+	} else {
+		newBoard.Lists = []models.List{*list}
+	}
 	return &newBoard, nil
 }
 
@@ -101,10 +110,23 @@ func (m *BoardsModule) DeleteBoard(ctx echo.Context, userID uint, wID uint) *ech
 	if board.Workspace.OwnerID != userID {
 		return echo.NewHTTPError(http.StatusForbidden, "your not board owner")
 	}
-	//todo: delete all board cards
+
+	//todo: delete all board cards and lists
 
 	if res := m.db.Delete(&models.Board{}, wID); res.Error != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, res.Error.Error())
 	}
 	return nil
+}
+
+func (m *BoardsModule) GetAllListsByBoardID(ctx echo.Context, userID uint, boardID uint) ([]*models.ApiList, *echo.HTTPError) {
+	var board models.Board
+	if m.db.Limit(20).Preload("Lists").Preload("Workspace").Find(&board, userID).Error != nil {
+		return nil, echo.ErrInternalServerError
+	}
+
+	//todo check workspace membership
+
+	lists := listsUtils.MapListsToApiLists(board.Lists)
+	return lists, nil
 }

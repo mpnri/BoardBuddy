@@ -4,6 +4,7 @@ import (
 	auth "board-buddy/services/auth"
 	boards "board-buddy/services/boards"
 	cards "board-buddy/services/cards"
+	lists "board-buddy/services/lists"
 	users "board-buddy/services/users"
 	workspaces "board-buddy/services/workspaces"
 
@@ -29,6 +30,7 @@ func SetupRoutes(e *echo.Echo, db *gorm.DB) {
 	workspaces.Setup(e, db)
 	boards.Setup(e, db)
 	cards.Setup(e, db)
+	lists.Setup(e, db)
 
 	e.Logger.SetLevel(log.DEBUG)
 	e.Logger.Fatal(e.Start(":3005"))

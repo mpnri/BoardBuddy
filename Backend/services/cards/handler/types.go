@@ -54,3 +54,23 @@ func (r *CreateCardRequest) bind(ctx echo.Context) *echo.HTTPError {
 	return nil
 }
 
+//* ChangeCardTitle
+
+type ChangeCardTitleRequest struct {
+	Title string `json:"title" validate:"required"`
+}
+
+func (r *ChangeCardTitleRequest) bind(ctx echo.Context) *echo.HTTPError {
+	if err := ctx.Bind(r); err != nil {
+		ctx.Logger().Debug("context bind error", err)
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+
+	if err := ctx.Validate(r); err != nil {
+		ctx.Logger().Debug("context validate error", err)
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+
+	return nil
+}
+
