@@ -57,12 +57,19 @@ export const Register: React.FC = () => {
     setPasswordMatch(isMatch);
 
     if (password.length === 0) {
-      // setShowPassMatchError(true);
       setShowPassError(true);
       e.target.setCustomValidity(" ");
     } else if (!isMatch) {
-      setShowPassMatchError(true);
       setShowPassError(false);
+      e.target.setCustomValidity("");
+      if (confirmPassword.length > 0){
+        setShowPassMatchError(true);
+        e.target.setCustomValidity(" ");
+      }else{
+        setShowPassMatchError(false);
+        e.target.setCustomValidity("");
+      }
+      
       e.target.setCustomValidity("");
     } else {
       setShowPassMatchError(false);
@@ -78,7 +85,7 @@ export const Register: React.FC = () => {
     const isMatch = confirmPass === password;
     setPasswordMatch(isMatch);
 
-    if (password.length > 0 && !isMatch) {
+    if (password.length>0 && !isMatch) {
       setShowPassMatchError(true);
       e.target.setCustomValidity(" ");
     } else {
