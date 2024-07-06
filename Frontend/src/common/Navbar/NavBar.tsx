@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   Navbar,
   Nav,
@@ -16,10 +16,29 @@ import {
   FaClipboardList,
 } from "react-icons/fa";
 import styles from "./NavBar.module.scss";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import clsx from "clsx";
+import { useAppDispatch, useAppSelector } from "~/utils/hooks.store";
+import { userSelector } from "~/users/users.selector";
+import { myIDSelector } from "~/auth/auth.selector";
+import { AuthActions } from "~/auth/auth.slice";
+import { useNavigate } from "react-router-dom";
+import { AppRoutes } from "~/routes/utils";
 
 const TrelloNavbar = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const me = useAppSelector((state) =>
+    userSelector(state, myIDSelector(state))
+  );
+  const logoutHandler = useCallback(() => {
+    document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    dispatch(AuthActions.setUnAuthorized());
+    setTimeout(() => {
+      navigate(AppRoutes.LOGIN);
+    }, 100);
+  }, [dispatch, navigate]);
+
   return (
     <Navbar variant="dark" expand="lg" className={styles.TrelloNavbar}>
       <Navbar.Brand href="#home" className={styles.NavbarBrand}>
@@ -30,7 +49,11 @@ const TrelloNavbar = () => {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="me-auto">
           <Dropdown>
-            <Dropdown.Toggle className={styles.NavDropdown} variant="dark" id="workspaces-dropdown">
+            <Dropdown.Toggle
+              className={styles.NavDropdown}
+              variant="dark"
+              id="workspaces-dropdown"
+            >
               Workspaces
             </Dropdown.Toggle>
             <Dropdown.Menu variant="dark">
@@ -40,7 +63,11 @@ const TrelloNavbar = () => {
             </Dropdown.Menu>
           </Dropdown>
           <Dropdown>
-            <Dropdown.Toggle className={styles.NavDropdown} variant="dark" id="recent-dropdown">
+            <Dropdown.Toggle
+              className={styles.NavDropdown}
+              variant="dark"
+              id="recent-dropdown"
+            >
               Recent
             </Dropdown.Toggle>
             <Dropdown.Menu variant="dark">
@@ -49,8 +76,12 @@ const TrelloNavbar = () => {
               <Dropdown.Item href="#action/4.3">Recent 3</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
-          <Dropdown >
-            <Dropdown.Toggle className={styles.NavDropdown} variant="dark" id="starred-dropdown">
+          <Dropdown>
+            <Dropdown.Toggle
+              className={styles.NavDropdown}
+              variant="dark"
+              id="starred-dropdown"
+            >
               Starred
             </Dropdown.Toggle>
             <Dropdown.Menu variant="dark">
@@ -60,7 +91,11 @@ const TrelloNavbar = () => {
             </Dropdown.Menu>
           </Dropdown>
           <Dropdown>
-            <Dropdown.Toggle className={styles.NavDropdown} variant="dark" id="templates-dropdown">
+            <Dropdown.Toggle
+              className={styles.NavDropdown}
+              variant="dark"
+              id="templates-dropdown"
+            >
               Templates
             </Dropdown.Toggle>
             <Dropdown.Menu variant="dark">
@@ -70,7 +105,11 @@ const TrelloNavbar = () => {
             </Dropdown.Menu>
           </Dropdown>
           <Dropdown>
-            <Dropdown.Toggle variant="primary" id="create-dropdown" className={styles.createBtn}>
+            <Dropdown.Toggle
+              variant="primary"
+              id="create-dropdown"
+              className={styles.createBtn}
+            >
               Create
             </Dropdown.Toggle>
             <Dropdown.Menu variant="dark" className={styles.createMenu}>
@@ -79,7 +118,12 @@ const TrelloNavbar = () => {
                   <FaClipboard />
                 </div>
                 <div className={styles.menuItemContent}>
-                  <div style={{fontWeight:'bold'}} className={styles.menuItemTitle}>Create board</div>
+                  <div
+                    style={{ fontWeight: "bold" }}
+                    className={styles.menuItemTitle}
+                  >
+                    Create board
+                  </div>
                   <div className={styles.menuItemDescription}>
                     A board is made up of cards ordered on lists.
                   </div>
@@ -90,7 +134,12 @@ const TrelloNavbar = () => {
                   <FaClipboardList />
                 </div>
                 <div className={styles.menuItemContent}>
-                  <div style={{fontWeight:'bold'}} className={styles.menuItemTitle}>Create a Workspace</div>
+                  <div
+                    style={{ fontWeight: "bold" }}
+                    className={styles.menuItemTitle}
+                  >
+                    Create a Workspace
+                  </div>
                   <div className={styles.menuItemDescription}>
                     Get started faster with a board template.
                   </div>
@@ -109,34 +158,52 @@ const TrelloNavbar = () => {
       </Form>
       <Nav>
         <Dropdown align="end" className={styles.regDropdown}>
-          <Dropdown.Toggle variant="dark" id="dropdown-regbell" className={styles.regdropdownToggle}>
+          <Dropdown.Toggle
+            variant="dark"
+            id="dropdown-regbell"
+            className={styles.regdropdownToggle}
+          >
             <FaRegBell className={styles.regIcon} />
           </Dropdown.Toggle>
         </Dropdown>
         <Dropdown align="end" className={styles.queDropdown}>
-          <Dropdown.Toggle variant="dark" id="dropdown-question" className={styles.quedropdownToggle}>
+          <Dropdown.Toggle
+            variant="dark"
+            id="dropdown-question"
+            className={styles.quedropdownToggle}
+          >
             <FaQuestionCircle className={styles.queIcon} />
           </Dropdown.Toggle>
         </Dropdown>
         <Dropdown align="end" className={styles.profileDropdown}>
-          <Dropdown.Toggle variant="dark" id="dropdown-profile" className={styles.dropdownToggle}>
+          <Dropdown.Toggle
+            variant="dark"
+            id="dropdown-profile"
+            className={styles.dropdownToggle}
+          >
             <FaUserCircle className={styles.userIcon} />
           </Dropdown.Toggle>
-          <Dropdown.Menu className={`dropdown-menu-dark ${styles.dropdownMenu}`}>
-            <Dropdown.Header className={styles.dropdownHeader}>ACCOUNT</Dropdown.Header>
+          <Dropdown.Menu
+            className={`dropdown-menu-dark ${styles.dropdownMenu}`}
+          >
+            <Dropdown.Header className={styles.dropdownHeader}>
+              ACCOUNT
+            </Dropdown.Header>
             <Dropdown.Item href="#">
               <div className="d-flex align-items-center">
-                <FaUserCircle className={styles.InneruserIcon}/>
+                <FaUserCircle className={styles.InneruserIcon} />
                 <div className={`ms-2 ${styles.profileInfo}`}>
-                  <div>Shervin Ghaffari</div>
-                  <small className={styles.email}>shervinghaffari79@gmail.com</small>
+                  <div>{me?.username}</div>
+                  <small className={styles.email}>{me?.email}</small>
                 </div>
               </div>
             </Dropdown.Item>
             <Dropdown.Item href="#">Switch accounts</Dropdown.Item>
             <Dropdown.Item href="#">Manage account</Dropdown.Item>
             <Dropdown.Divider className={styles.dropdownDivider} />
-            <Dropdown.Header className={styles.dropdownHeader}>TRELLO</Dropdown.Header>
+            <Dropdown.Header className={styles.dropdownHeader}>
+              TRELLO
+            </Dropdown.Header>
             <Dropdown.Item href="#">Profile and visibility</Dropdown.Item>
             <Dropdown.Item href="#">Activity</Dropdown.Item>
             <Dropdown.Item href="#">Cards</Dropdown.Item>
@@ -148,7 +215,9 @@ const TrelloNavbar = () => {
             <Dropdown.Item href="#">Help</Dropdown.Item>
             <Dropdown.Item href="#">Shortcuts</Dropdown.Item>
             <Dropdown.Divider className={styles.dropdownDivider} />
-            <Dropdown.Item href="#">Log out</Dropdown.Item>
+            <Dropdown.Item href="#" onClick={logoutHandler}>
+              Log out
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </Nav>
