@@ -1,17 +1,18 @@
-
-
 .MainContainer {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
-  height: 90vh;
-  width: 90vw;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
 }
 
 .Container {
-  max-width: 300px;
+  max-width: 350px;
   margin-top: 50px;
-  width: 400px;
+  width: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,11 +20,10 @@
   border: 1px solid #ebe9e9;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  font-family: Arial, sans-serif;
 }
 
 .LeftContainer {
-  width:25%;
+  width: 25%;
   height: 45%;
   top: 1;
   left: 0;
@@ -32,7 +32,7 @@
   position: absolute;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url('/src/assets/trello-left.svg'); /* Ensure the path is correct */
+  background-image: url("/src/assets/trello-left.svg"); /* Ensure the path is correct */
 }
 
 .RightContainer {
@@ -45,25 +45,7 @@
   bottom: 0;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url('/src/assets/trello-right.svg'); /* Ensure the path is correct */
-}
-
-button[type="submit"] {
-    margin: 0px;
-    border-radius: 2px;
-    width: 100%;
-    padding: 12px;
-    font-weight: 600;
-    font-size: 14px;
-    background-color: #0C66E4;
-    color: white;
-    border: none;
-    border-radius: 2px;
-    cursor: pointer;
-  }
-
-button[type="submit"]:hover {
-  background-color: #0055CC;
+  background-image: url("/src/assets/trello-right.svg"); /* Ensure the path is correct */
 }
 
 .Title {
@@ -71,22 +53,46 @@ button[type="submit"]:hover {
   margin: 0px;
   font-size: 30px;
 }
+
 .SmallTitle {
   margin-top: 20px;
   margin-bottom: 30px;
-  color: #515050;
+  color: #6f6f6f;
+  font-size: 20px;
+  font-weight: 500px;
 }
 
-.ImageContainer{
+.ImageContainer {
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 100%;
-  }
-  
-  img{
+
+  img {
     width: 25px;
-    margin: 10px;
+    margin-right: 10px;
   }
+}
+
+.Form {
+  button[type="submit"] {
+    margin: 0px;
+    border-radius: 2px;
+    width: 100%;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    background-color: #0c66e4;
+    color: white;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  button[type="submit"]:hover {
+    background-color: #0055cc;
+  }
+}
 
 .FormGroup {
   width: 100%;
@@ -110,8 +116,8 @@ button[type="submit"]:hover {
   height: 42px;
   box-sizing: border-box;
   font-size: 13px;
-  background-color: #FAFBFC;
-  color:#3b3a3a;
+  background-color: #fafbfc;
+  color: #3b3a3a;
 }
 
 ::-webkit-input-placeholder {
@@ -127,21 +133,21 @@ button[type="submit"]:hover {
   font-size: 14px;
   background: none;
   border: none;
-  width: fit-content;
-  color:rgb(12, 102, 228)
+  width: 100%;
+  color: rgb(12, 102, 228);
 }
-.BackToLoginButton:hover{
+.BackToLoginButton:hover {
   text-decoration: underline;
 }
 
-.EmailError{
+.EmailError {
   color: red;
   margin: 0px 0px 10px 0px;
   text-align: left;
   font-size: 14px;
 }
 
-.Success{
+.Success {
   color: rgb(1, 161, 92);
   margin: 5px 0px 5px 0px;
   text-align: left;

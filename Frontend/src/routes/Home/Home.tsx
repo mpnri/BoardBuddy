@@ -11,17 +11,21 @@ import { Spinner } from "react-bootstrap";
 //todo: implement main home page UI
 export const Home: React.FC = () => {
   const navigate = useNavigate();
-  const authState = useAppSelector(authStateSelector);
+  // const authState = useAppSelector(authStateSelector);
 
+  // useEffect(() => {
+  //   if (authState === AuthState.UnAuthorized || authState === AuthState.Error) {
+  //     navigate(AppRoutes.LOGIN);
+  //   }
+  // }, [authState]);
+
+  // if (authState === AuthState.TokenChecking) {
+  //   return <Spinner />;
+  // }
   useEffect(() => {
-    if (authState === AuthState.UnAuthorized || authState === AuthState.Error) {
-      navigate(AppRoutes.LOGIN);
-    }
-  }, [authState]);
-
-  if (authState === AuthState.TokenChecking) {
-    return <Spinner />
-  }
+    navigate(AppRoutes.Workspace)
+  }, [])
+  
 
   return (
     <>

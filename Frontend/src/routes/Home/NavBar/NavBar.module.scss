@@ -1,0 +1,75 @@
+.TrelloNavbar {
+  padding: 0.25rem 1rem;
+  margin: 0px 20px;
+  background-color: #1d2125 !important;
+
+  .NavbarBrand {
+    // margin: 0px 30px;
+    font-weight: bold;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .NavLink,
+  .DropdownToggle {
+    color: #9fadbc !important;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #ffffff !important;
+    }
+  }
+
+  .CreateBtn {
+    background-color: #145cc1;
+    border: none;
+    font-size: 0.9rem;
+    padding: 0.25rem 0.75rem;
+
+    &:hover {
+      background-color: #265393;
+    }
+  }
+
+  .SearchForm {
+    .FormControl {
+      width: 200px;
+      background-color: #22272b;
+      border: 1px solid #3e4852;
+      color: #ffffff;
+      font-size: 0.9rem;
+
+      &::placeholder {
+        color: #9fadbc;
+      }
+      &:focus {
+        background-color: #22272b;
+        box-shadow: none;
+        border-color: #579dff;
+      }
+    }
+  }
+
+  .NavLink {
+    font-size: 15px;
+    font-weight: 600;
+    padding: 5px 10px;
+  }
+
+  .NavDropdown {
+    margin-right: 10px;
+    > a {
+      color: #9fadbc !important;
+      font-size: 0.9rem;
+      padding: 0.5rem 0.75rem;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #ffffff !important;
+      }
+    }
+  }
+}

@@ -15,14 +15,14 @@ export const Login: React.FC = () => {
   const authState = useAppSelector(authStateSelector);
   useEffect(() => {
     if (authState === AuthState.Success) {
-      navigate(AppRoutes.Home);
+      navigate(AppRoutes.Workspace);
     }
   }, [authState]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [showUserError, setShowUserError] = useState(false);
+  const [showEmailError, setShowEmailError] = useState(false);
   const [showPassError, setShowPassError] = useState(false);
 
   const handleSignUpRedirect = () => {
@@ -31,15 +31,19 @@ export const Login: React.FC = () => {
 
   const handleEmailError = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.target.setCustomValidity(" ");
-    setShowUserError(true);
+    setShowEmailError(true);
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const email = e.target.value;
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value);
     setEmail(email);
-    if (email.length > 0) {
-      setShowUserError(false);
+    if (isValid) {
+      setShowEmailError(false);
       e.target.setCustomValidity("");
+    } else {
+      setShowEmailError(true);
+      e.target.setCustomValidity(" ");
     }
   };
 
@@ -52,13 +56,15 @@ export const Login: React.FC = () => {
     const password = e.target.value;
     setPassword(password);
     if (password.length > 0) {
-      setShowUserError(false);
+      setShowPassError(false);
       e.target.setCustomValidity("");
+    } else {
+      setShowPassError(true);
+      e.target.setCustomValidity(" ");
     }
   };
 
-  //todo: implement
-  const handleSubmit = (event: any) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError("");
     AuthAPI.loginUser({ email, password })
@@ -83,7 +89,7 @@ export const Login: React.FC = () => {
 
         <h3 className={styles.SmallTitle}>Login to continue</h3>
         {/* todo: refactor to div */}
-        <form onSubmit={handleSubmit}>
+        <form className={styles.Form} onSubmit={handleSubmit}>
           <div className={styles.FormGroup}>
             {/* <label className={styles.Label}>Email:</label> */}
             <input
@@ -95,7 +101,7 @@ export const Login: React.FC = () => {
               onInvalid={handleEmailError}
               required
             />
-            {showUserError && (
+            {showEmailError && (
               <p className={styles.EmailError}>{"Enter your email!"}</p>
             )}
           </div>
