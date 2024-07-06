@@ -3,11 +3,13 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 import styles from "./WorkspaceBoard.module.scss";
 import clsx from "clsx";
 import { useAppSelector } from "../../../utils/hooks.store";
-import { BoardsAPI } from "../../../boards/boards.api";
+import { useNavigate } from "react-router-dom";
+import { AppRoutes } from "~/routes/utils";
 
 const colors = ["#607D8B", "#C2185B", "#5B6F91", "rgba(161, 189, 217, 0.08"];
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   //todo: add recently viewed
   const recentlyViewed = [
     { name: "BoardBuddy", color: "#0079bf" },
@@ -62,6 +64,9 @@ const Dashboard = () => {
                         backgroundColor: colors[idx % colors.length],
                         width: "15rem",
                       }}
+                      onClick={() =>
+                        navigate(AppRoutes.Workspace + "/boards/" + board.id)
+                      }
                     >
                       <Card.Body className={styles.CardBody}>
                         <Card.Title className={styles.CardTitle}>

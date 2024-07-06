@@ -46,7 +46,7 @@ func NewBoardsModule(db *gorm.DB, usersModule *users.UsersModule) *BoardsModule 
 
 func (m *BoardsModule) GetBoardByID(ctx echo.Context, userID uint, bID uint) (*models.ApiBoard, *echo.HTTPError) {
 	var board *models.Board
-	if err := m.db.Preload("Cards").Preload("Workspaces").First(&board, bID).Error; err != nil {
+	if err := m.db.Preload("Cards").Preload("Workspace").First(&board, bID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, echo.ErrNotFound
 		}
