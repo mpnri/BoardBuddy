@@ -1,0 +1,89 @@
+.left-sidebar {
+  background-color: #1D2125;
+  color: #B6C2CF;
+  padding: 20px;
+  height: 90vh;
+  width: 240px;
+
+  .nav-link {
+    color: #B6C2CF;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    &:hover {
+      background-color: #A6C5E229;
+      color: #fff;
+    }
+  }
+
+  hr {
+    border-color: #A6C5E229;
+    margin: 15px 0;
+  }
+
+  h6 {
+    color: #B6C2CF;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    padding-left: 12px;
+  }
+
+  .workspace-icon {
+    background-color: #579DFF;
+    color: #1D2125;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    font-weight: bold;
+  }
+
+  .workspace-subnav {
+    padding-left: 10px;
+  }
+
+  .accordion-item-transparent {
+    background-color: transparent;
+    border: none; // Remove border from Accordion.Item
+
+    .accordion-header {
+      background-color: transparent;
+      color: #B6C2CF;
+      border: none; // Remove border from Accordion.Header
+      padding: 0;
+
+      .accordion-button {
+        background-color: transparent;
+        color: #B6C2CF;
+        box-shadow: none;
+        font-size: 15px;
+
+        &:focus {
+          box-shadow: none;
+        }
+
+        &::after {
+          filter: invert(1);
+          border: none; // Remove border from the chevron
+        }
+
+        &:not(.collapsed) {
+          background-color: transparent;
+          color: #B6C2CF;
+          border: none; // Remove border from expanded .accordion-button
+        }
+      }
+    }
+
+    .accordion-body {
+      background-color: transparent;
+      padding: 0px 10px;
+    }
+  }
+}

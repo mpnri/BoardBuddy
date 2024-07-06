@@ -37,9 +37,10 @@ export const Register: React.FC = () => {
     const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
     if (isValid) {
       event.target.setCustomValidity("");
+      setShowEmailError(false);
+
     }
     setEmailValid(isValid);
-    setShowEmailError(false);
   };
 
   const handleEmailError = (event: React.InvalidEvent<HTMLInputElement>) => {
@@ -57,7 +58,7 @@ export const Register: React.FC = () => {
     setPasswordMatch(isMatch);
 
     if (password.length === 0) {
-      setShowPassMatchError(true);
+      // setShowPassMatchError(true);
       setShowPassError(true);
       e.target.setCustomValidity(" ");
     } else if (!isMatch) {
@@ -78,7 +79,7 @@ export const Register: React.FC = () => {
     const isMatch = confirmPass === password;
     setPasswordMatch(isMatch);
 
-    if (confirmPass.length === 0 || !isMatch) {
+    if (password.length>0 && !isMatch) {
       setShowPassMatchError(true);
       e.target.setCustomValidity(" ");
     } else {
@@ -112,7 +113,7 @@ export const Register: React.FC = () => {
         setTimeout(() => {
           dispatch(AuthActions.setAuthenticatedUser(user));
           dispatch(UsersActions.setUsers([user]));
-          navigate(AppRoutes.Home);
+          navigate(AppRoutes.Workspace);
         }, 1500);
       })
       .catch(() => {});

@@ -9,11 +9,17 @@ import { AuthActions } from "../auth/auth.slice";
 import { UsersActions } from "../users/users.slice";
 import { ReasonPhrases } from "http-status-codes";
 import { AuthAPI } from "../auth/auth.api";
+import NavBar from "./Home/NavBar/NavBar";
+import LeftSidebar from "./Home/LeftSideBar/LeftSideBar";
+import Workspace from "./Home/WorkspaceBoard/MainBoard";
 
 const routes = createBrowserRouter([
   { path: AppRoutes.Home, element: <Home /> },
   { path: AppRoutes.REGISTER, element: <Register /> },
   { path: AppRoutes.LOGIN, element: <Login /> },
+  { path: AppRoutes.Nav, element: <NavBar /> },
+  { path: AppRoutes.LeftSidebar, element: <LeftSidebar /> },
+  { path: AppRoutes.Workspace, element: <Workspace /> },
 ]);
 
 export const MainRoutes: React.FC = () => {
