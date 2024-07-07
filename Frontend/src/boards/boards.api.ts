@@ -1,3 +1,4 @@
+import { ApiList } from "~/types/list";
 import { ApiBoard } from "../types/board";
 import { callRequest, RequestFunction } from "../utils/api";
 
@@ -46,9 +47,7 @@ interface ResponseCreateBoard {
   board: ApiBoard;
 }
 
-const createBoard: RequestFunction<RequestCreateBoard, ApiBoard> = (
-  body
-) =>
+const createBoard: RequestFunction<RequestCreateBoard, ApiBoard> = (body) =>
   callRequest(subPathUrl, "POST", body)
     .then((res: ResponseCreateBoard) => {
       return res.board;
@@ -58,8 +57,23 @@ const createBoard: RequestFunction<RequestCreateBoard, ApiBoard> = (
       throw err;
     });
 
+interface ResponseLoadAllListsByBoardID {
+  lists: ApiList[];
+}
+//* LoadAllListsByBoardID
+const loadAllListsByBoardID: RequestFunction<number, ApiList[]> = (id) =>
+  callRequest(subPathUrl + id + "/lists", "GET")
+    .then((res: ResponseLoadAllListsByBoardID) => {
+      return res.lists;
+    })
+    .catch((err) => {
+      console.error("BoardsAPI", "loadAllListsByBoardID", err);
+      throw err;
+    });
+
 export const BoardsAPI = {
   loadBoard,
   // loadAllBoard,
   createBoard,
+  loadAllListsByBoardID,
 };

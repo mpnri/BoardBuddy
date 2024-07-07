@@ -1,20 +1,50 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { Container, Row, Col, Spinner } from "react-bootstrap";
 import { MdError } from "react-icons/md";
-import { RouteObject, RouteProps, useLoaderData } from "react-router-dom";
+import {
+  RouteObject,
+  RouteProps,
+  useLoaderData,
+  useParams,
+} from "react-router-dom";
 import { BoardsAPI } from "~/boards/boards.api";
 import { ApiBoard } from "~/types/board";
-import { useAppDispatch } from "~/utils/hooks.store";
+import { useAppDispatch, useAppSelector } from "~/utils/hooks.store";
 import { Dispatch } from "@reduxjs/toolkit";
 import { BoardsActions } from "~/boards/boards.slice";
 import styles from "./Board.module.scss";
 import clsx from "clsx";
 import Sortable from "sortablejs";
+import { ListsActions } from "~/lists/lists.slice";
+import { listsSelector } from "~/lists/lists.selector";
+import { boardSelector } from "~/boards/boards.selector";
+import { ListsAPI } from "~/lists/lists.api";
+import { toast } from "react-toastify";
+import { CardsAPI } from "~/cards/cards.api";
 
 const Board: React.FC = () => {
-  const board = useLoaderData() as ApiBoard;
+  const id = useLoaderData() as number;
   // console.log(board);
-  const data = useMemo(() => {}, []);
+  // const param = useParams()
+  // const id = param.boardID;
+  const cards = useAppSelector((state) => boardSelector(state, id)?.cards);
+  console.log("bbb", cards)
+  const listsMap = useAppSelector(listsSelector);
+  const boardData = useMemo(() => {
+    const cardList = cards ?? [];
+    const listIDs = Array.from(listsMap.values())
+      .filter((l) => l.boardID === id)
+      .map((l) => l.id);
+    return listIDs
+      .map((lID) => ({
+        list: listsMap.get(lID)!,
+        cards: cardList
+          .filter((c) => c.listID === lID)
+          .sort((c1, c2) => c1.order - c2.order),
+      }))
+      .sort((l1, l2) => l1.list.order - l2.list.order);
+  }, [cards, id, listsMap]);
+
   const BoardWrapperRef = useRef<HTMLDivElement>(null);
   const mainWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -31,7 +61,7 @@ const Board: React.FC = () => {
       ghostClass: styles.Ghost,
       dragoverBubble: true,
     });
-    
+
     // console.log(list.toArray())
 
     function initContent() {
@@ -135,15 +165,36 @@ const Board: React.FC = () => {
       if (el.classList.contains("pending")) {
         // el.className = "card removable editable";
         // console.log("trello end")
-        el.className = clsx(styles.Card, styles.Removable, styles.Editable);
-        let newEl = document.createElement("div");
-        // newEl.className = "add-card editable";
-        newEl.className = clsx(styles.AddCard, styles.Editable);
-        let text = document.createTextNode("Add another card");
-        newEl.appendChild(text);
-        el.parentNode!.appendChild(newEl);
+        const listID = Number(el.parentElement?.children[0]?.id.split("-")?.[1] ?? "");
+        // console.log(el.parentElement);
+        CardsAPI.createCard({
+          card: {
+            id: 1,
+            boardID: id,
+            creatorID: 1,
+            title: el.innerText,
+            description: "",
+            listID,
+            order: 1,
+          },
+        })
+          .then((card) => {
+            el.className = clsx(styles.Card, styles.Removable, styles.Editable);
+            el.id = `card-${card.id}`;
+            const newEl = document.createElement("div");
+            // newEl.className = "add-card editable";
+            newEl.className = clsx(styles.AddCard, styles.Editable);
+            const text = document.createTextNode("Add another card");
+            newEl.appendChild(text);
+            el.parentNode!.appendChild(newEl);
 
-        el.parentNode!.querySelector("." + styles.ListContent)!.appendChild(el);
+            el.parentNode!.querySelector("." + styles.ListContent)!.appendChild(
+              el
+            );
+          })
+          .catch((err) => {
+            toast.error("Some problem occurred");
+          });
       }
 
       if (el.parentElement!.className === clsx(styles.List, "initial")) {
@@ -152,37 +203,48 @@ const Board: React.FC = () => {
 
       // console.log("trello", "trello", el)
       if (el.parentElement!.className === clsx(styles.List, "pending")) {
-        el.parentElement!.className = styles.List;
-        // el.className = "title removable editable";
-        el.className = clsx(
-          styles.ListTitle,
-          styles.Removable,
-          styles.Editable
-        );
-        const newContent = document.createElement("div");
-        newContent.className = styles.ListContent;
-        el.parentElement!.appendChild(newContent);
+        ListsAPI.createList({
+          list: { id: 1, title: el.innerText, boardID: id, order: 1 },
+        })
+          .then((list) => {
+            el.parentElement!.className = styles.List;
+            // el.className = "title removable editable";
+            el.className = clsx(
+              styles.ListTitle,
+              styles.Removable,
+              styles.Editable
+            );
+            el.id = `list-${list.id}`;
+            const newContent = document.createElement("div");
+            newContent.className = styles.ListContent;
+            newContent.id = "listContent-" + list.id;
+            el.parentElement!.appendChild(newContent);
 
-        const newEl = document.createElement("div");
-        // newEl.className = "add-card editable";
-        newEl.className = clsx(styles.AddCard, styles.Editable);
-        let text = document.createTextNode("Add another card");
-        newEl.appendChild(text);
-        el.parentNode!.appendChild(newEl);
+            const newEl = document.createElement("div");
+            // newEl.className = "add-card editable";
+            newEl.className = clsx(styles.AddCard, styles.Editable);
+            let text = document.createTextNode("Add another card");
+            newEl.appendChild(text);
+            el.parentNode!.appendChild(newEl);
 
-        main!.appendChild(el.parentElement!);
+            main!.appendChild(el.parentElement!);
 
-        initContent();
+            initContent();
 
-        const addList = document.createElement("div");
-        addList.className = styles.AddList;
-        const title = document.createElement("div");
-        // title.className = "title editable";
-        title.className = clsx(styles.ListTitle, styles.Editable);
-        text = document.createTextNode("Add another list");
-        title.appendChild(text);
-        addList.appendChild(title);
-        body!.appendChild(addList);
+            const addList = document.createElement("div");
+            addList.className = styles.AddList;
+            const title = document.createElement("div");
+            // title.className = "title editable";
+            title.className = clsx(styles.ListTitle, styles.Editable);
+            text = document.createTextNode("Add another list");
+            title.appendChild(text);
+            addList.appendChild(title);
+            body!.appendChild(addList);
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.error("Some problem occurred");
+          });
       }
 
       initDelete();
@@ -202,11 +264,34 @@ const Board: React.FC = () => {
     function elMouseEnterHandler(e: Event) {
       const el = e.target as HTMLElement;
       const isRemovable = el.classList.contains(styles.Removable);
+      const isCard = el.classList.contains(styles.Card);
 
       if (isRemovable) {
         const del = document.createElement("span");
         del.className = "del";
         del.innerHTML = "&times;";
+        if (!isCard) {
+          const listID = el.id.split("-")?.[1] ?? "";
+          del.addEventListener("click", () =>
+            ListsAPI.deleteList(Number(listID))
+              .then((res) => {})
+              .catch((err) => {
+                console.log(err);
+                toast.error("Some problem occurred");
+              })
+          );
+        } else {
+          const cardID = el.id.split("-")?.[1] ?? "";
+          del.addEventListener("click", () =>
+            CardsAPI.deleteCard(Number(cardID))
+              .then((res) => {})
+              .catch((err) => {
+                console.log(err);
+                toast.error("Some problem occurred");
+              })
+          );
+        }
+
         el.appendChild(del);
 
         el.addEventListener("click", deleteHandler);
@@ -220,7 +305,7 @@ const Board: React.FC = () => {
     }
 
     function deleteHandler(e: MouseEvent) {
-      const target = e.target as HTMLElement
+      const target = e.target as HTMLElement;
       let parent = target.parentElement!;
 
       if (parent.classList.contains(styles.Card)) {
@@ -235,86 +320,49 @@ const Board: React.FC = () => {
     return () => {};
   }, []);
 
+  console.log(boardData)
+
   return (
     <div className={styles.BoardWrapper} ref={BoardWrapperRef}>
       <div className={styles.ListsWrapper} ref={mainWrapperRef}>
-        <div className={styles.List}>
-          <div
-            className={clsx(
-              styles.ListTitle,
-              styles.Removable,
-              styles.Editable
-            )}
-          >
-            This is a list
-          </div>
-          <div className={styles.ListContent}>
+        {boardData.map((data) => (
+          <div key={data.list.id} className={styles.List}>
             <div
-              className={clsx(styles.Card, styles.Removable, styles.Editable)}
+              className={clsx(
+                styles.ListTitle,
+                styles.Removable,
+                styles.Editable
+              )}
+              id={"list-" + data.list.id}
             >
-              This is a card
+              {/* This is a list */}
+              {data.list.title}
             </div>
             <div
-              className={clsx(styles.Card, styles.Removable, styles.Editable)}
+              className={styles.ListContent}
+              id={"listContent-" + data.list.id}
             >
-              This is a card
+              {data.cards.map((card) => (
+                <div
+                  key={card.id}
+                  className={clsx(
+                    styles.Card,
+                    styles.Removable,
+                    styles.Editable
+                  )}
+                  id={"card-" + card.id}
+                >
+                  {/* This is a card */}
+                  {card.title}
+                </div>
+              ))}
             </div>
-            <div
-              className={clsx(styles.Card, styles.Removable, styles.Editable)}
-            >
-              This is a card
-            </div>
-            <div
-              className={clsx(styles.Card, styles.Removable, styles.Editable)}
-            >
-              This is a card
-            </div>
-            <div
-              className={clsx(styles.Card, styles.Removable, styles.Editable)}
-            >
-              This is a card
-            </div>{" "}
-            <div
-              className={clsx(styles.Card, styles.Removable, styles.Editable)}
-            >
-              This is a card
-            </div>
-            <div
-              className={clsx(styles.Card, styles.Removable, styles.Editable)}
-            >
-              This is a card
-            </div>
-            <div
-              className={clsx(styles.Card, styles.Removable, styles.Editable)}
-            >
-              Look, another card!
+            <div className={clsx(styles.AddCard, styles.Editable)}>
+              Add another card
             </div>
           </div>
-          <div className={clsx(styles.AddCard, styles.Editable)}>
-            Add another card
-          </div>
-        </div>
-        <div className={styles.List}>
-          <div
-            className={clsx(
-              styles.ListTitle,
-              styles.Removable,
-              styles.Editable
-            )}
-          >
-            Another list
-          </div>
-          <div className={styles.ListContent}>
-            <div
-              className={clsx(styles.Card, styles.Removable, styles.Editable)}
-            >
-              Hello world!
-            </div>
-          </div>
-          <div className={clsx(styles.AddCard, styles.Editable)}>
-            Add another card
-          </div>
-        </div>
+        ))}
+        {/*
         <div className={styles.List}>
           <div
             className={clsx(
@@ -329,7 +377,7 @@ const Board: React.FC = () => {
           <div className={clsx(styles.AddCard, styles.Editable)}>
             Add another card
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className={styles.AddList}>
@@ -353,10 +401,16 @@ const getBoardRoute = (dispatch: Dispatch): RouteObject => ({
   loader: async ({ params }) => {
     const id = Number(params.boardID);
     if (!isNaN(id)) {
-      return BoardsAPI.loadBoard(id).then((board) => {
-        dispatch(BoardsActions.setBoards([board]));
-        return board;
-      });
+      return Promise.all([
+        BoardsAPI.loadAllListsByBoardID(id).then((lists) => {
+          dispatch(ListsActions.setLists(lists));
+          return lists;
+        }),
+        BoardsAPI.loadBoard(id).then((board) => {
+          dispatch(BoardsActions.setBoards([board]));
+          return board;
+        }),
+      ]).then(() => id);
     }
   },
   errorElement: <MdError color="#fff" />,

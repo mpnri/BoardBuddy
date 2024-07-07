@@ -93,7 +93,7 @@ func (m *BoardsModule) CreateBoard(ctx echo.Context, data *CreateBoardData) (*mo
 		// return nil, echo.NewHTTPError(http.StatusInternalServerError, res.Error.Error())
 		ctx.Logger().Debug("error creating first list")
 	} else {
-		newBoard.Lists = []models.List{*list}
+		newBoard.Lists = []models.List{listsUtils.MapApiListToList(list)}
 	}
 	return &newBoard, nil
 }
@@ -121,7 +121,7 @@ func (m *BoardsModule) DeleteBoard(ctx echo.Context, userID uint, wID uint) *ech
 
 func (m *BoardsModule) GetAllListsByBoardID(ctx echo.Context, userID uint, boardID uint) ([]*models.ApiList, *echo.HTTPError) {
 	var board models.Board
-	if m.db.Limit(20).Preload("Lists").Preload("Workspace").Find(&board, userID).Error != nil {
+	if m.db.Limit(20).Preload("Lists").Preload("Workspace").Find(&board, boardID).Error != nil {
 		return nil, echo.ErrInternalServerError
 	}
 

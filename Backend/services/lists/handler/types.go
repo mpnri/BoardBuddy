@@ -54,3 +54,12 @@ func (r *CreateListRequest) bind(ctx echo.Context) *echo.HTTPError {
 	return nil
 }
 
+type CreateListResponse struct {
+	List *models.ApiList `json:"list"`
+}
+
+func NewCreateListResponse(ls *models.ApiList) *CreateListResponse {
+	var res CreateListResponse
+	res.List = ls
+	return &res
+}

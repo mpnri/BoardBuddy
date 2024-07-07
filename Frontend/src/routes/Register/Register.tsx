@@ -8,6 +8,7 @@ import { AuthActions } from "../../auth/auth.slice";
 import { UsersActions } from "../../users/users.slice";
 import { authStateSelector } from "../../auth/auth.selector";
 import { AuthState } from "../../auth/auth.utils";
+import { toast } from "react-toastify";
 
 export const Register: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -116,12 +117,15 @@ export const Register: React.FC = () => {
       .then((user) => {
         setShowSuccessMessage(true);
         setTimeout(() => {
+          toast.success("Registerd successfully!")
           dispatch(AuthActions.setAuthenticatedUser(user));
           dispatch(UsersActions.setUsers([user]));
           navigate(AppRoutes.Workspace);
         }, 1500);
       })
-      .catch(() => {});
+      .catch((err) => {
+        toast.error("Error: " + String(err));
+      });
   };
 
   const handleRedirect = () => {

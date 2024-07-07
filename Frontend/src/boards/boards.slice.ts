@@ -5,7 +5,7 @@ export interface BoardsStore {
   boards: Map<number, ApiBoard>;
 }
 
-const initialState: BoardsStore = {  
+const initialState: BoardsStore = {
   boards: new Map(),
 };
 
@@ -14,9 +14,14 @@ const BoardsSlice = createSlice({
   initialState,
   reducers: {
     setBoards(state, action: PayloadAction<ApiBoard[]>) {
-      action.payload.forEach((board) =>
-        state.boards.set(board.id, board)
-      );
+      action.payload.forEach((board) => state.boards.set(board.id, board));
+    },
+    setNewBoards(state, action: PayloadAction<ApiBoard[]>) {
+      action.payload.forEach((board) => {
+        if (!state.boards.has(board.id)) {
+          state.boards.set(board.id, board);
+        }
+      });
     },
   },
 });

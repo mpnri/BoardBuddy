@@ -54,6 +54,16 @@ func (r *CreateCardRequest) bind(ctx echo.Context) *echo.HTTPError {
 	return nil
 }
 
+type CreateCardResponse struct {
+	Card *models.ApiCard `json:"card"`
+}
+
+func NewCreateCardResponse(ws *models.ApiCard) *CreateCardResponse {
+	var res CreateCardResponse
+	res.Card = ws
+	return &res
+}
+
 //* ChangeCardTitle
 
 type ChangeCardTitleRequest struct {

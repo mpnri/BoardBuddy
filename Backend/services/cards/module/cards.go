@@ -66,7 +66,7 @@ func (m *CardsModule) GetCardByID(ctx echo.Context, userID uint, cardID uint) (*
 	}, nil
 }
 
-func (m *CardsModule) CreateCard(ctx echo.Context, data *models.ApiCard) (*models.Card, *echo.HTTPError) {
+func (m *CardsModule) CreateCard(ctx echo.Context, data *models.ApiCard) (*models.ApiCard, *echo.HTTPError) {
 	//todo: check if the user is a member of workspace
 	// user, err := m.usersModule.GetUserByID(ctx, data.OwnerID)
 	// if err != nil {
@@ -77,7 +77,7 @@ func (m *CardsModule) CreateCard(ctx echo.Context, data *models.ApiCard) (*model
 	if res := m.db.Create(&newCard); res.Error != nil {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, res.Error.Error())
 	}
-	return &newCard, nil
+	return cardsUtils.MapCardToApiCard(newCard), nil
 }
 
 func (m *CardsModule) DeleteCard(ctx echo.Context, userID uint, cID uint) *echo.HTTPError {
