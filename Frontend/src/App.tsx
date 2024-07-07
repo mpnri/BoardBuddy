@@ -3,6 +3,7 @@ import { MainRoutes } from "./routes";
 //todo: use sass
 import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-spring-bottom-sheet/dist/style.css'
 
 const App: React.FC = () => {
   //todo: add Toast and breakpoint `providers`

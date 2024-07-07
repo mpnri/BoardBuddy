@@ -29,7 +29,8 @@
     padding: 0.5rem 0.7rem;
     font-weight: bold;
 
-    &:active, &:hover {
+    &:active,
+    &:hover {
       background-color: #265393;
     }
 
@@ -61,7 +62,7 @@
 
     .menuItemContent {
       flex: 1;
-      min-width: 0; 
+      min-width: 0;
     }
 
     .menuItemTitle {
@@ -102,9 +103,9 @@
     padding: 5px 10px;
   }
 
-  .NavDropdownToggle{
+  .NavDropdownToggle {
     margin-right: 10px;
-    background:none;
+    background: none;
     box-shadow: none;
     border: none;
 
@@ -113,10 +114,10 @@
       font-size: 0.9rem;
       padding: 0.5rem 0.75rem;
       transition: color 0.3s ease;
-      background:none;
+      background: none;
       box-shadow: none;
       border: none;
-      
+
       &:hover {
         color: #ffffff !important;
       }
@@ -125,7 +126,7 @@
 
   .NavDropdown {
     margin-right: 5px;
-    background:none;
+    background: none;
     box-shadow: none;
     border: none;
     color: #9fadbc !important;
@@ -135,10 +136,10 @@
       font-size: 0.9rem;
       padding: 0.5rem 0.75rem;
       transition: color 0.3s ease;
-      background:none;
+      background: none;
       box-shadow: none;
       border: none;
-      
+
       &:hover {
         color: #ffffff !important;
       }
@@ -173,7 +174,9 @@
       display: none;
     }
 
-    &:hover, &:focus, &:active {
+    &:hover,
+    &:focus,
+    &:active {
       box-shadow: none;
       background: none;
 
@@ -207,7 +210,9 @@
       display: none;
     }
 
-    &:hover, &:focus, &:active {
+    &:hover,
+    &:focus,
+    &:active {
       box-shadow: none;
       background: none;
 
@@ -236,7 +241,9 @@
       display: none;
     }
 
-    &:hover, &:focus, &:active {
+    &:hover,
+    &:focus,
+    &:active {
       box-shadow: none;
       background: none;
 
@@ -251,4 +258,12 @@
       font-size: 20px;
     }
   }
+}
+
+.BottomSheet {
+  --rsbs-bg: #282e33;
+
+  --rsbs-max-w: 400px;
+  --rsbs-ml: auto;
+  --rsbs-mr: auto;
 }

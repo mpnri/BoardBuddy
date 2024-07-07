@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Navbar,
   Nav,
@@ -6,6 +6,7 @@ import {
   Button,
   Form,
   FormControl,
+  Container,
 } from "react-bootstrap";
 import {
   FaRegBell,
@@ -24,6 +25,7 @@ import { myIDSelector } from "~/auth/auth.selector";
 import { AuthActions } from "~/auth/auth.slice";
 import { useNavigate } from "react-router-dom";
 import { AppRoutes } from "~/routes/utils";
+import { BottomSheet } from "react-spring-bottom-sheet";
 
 const TrelloNavbar = () => {
   const dispatch = useAppDispatch();
@@ -38,6 +40,8 @@ const TrelloNavbar = () => {
       navigate(AppRoutes.LOGIN);
     }, 100);
   }, [dispatch, navigate]);
+
+  const [isBoardBottomSheetOpen, setIsBoardBottomSheetOpen] = useState(false);
 
   return (
     <Navbar variant="dark" expand="lg" className={styles.TrelloNavbar}>
@@ -117,7 +121,10 @@ const TrelloNavbar = () => {
                 <div className={styles.menuItemIcon}>
                   <FaClipboard />
                 </div>
-                <div className={styles.menuItemContent}>
+                <div
+                  className={styles.menuItemContent}
+                  onClick={() => setIsBoardBottomSheetOpen(true)}
+                >
                   <div
                     style={{ fontWeight: "bold" }}
                     className={styles.menuItemTitle}
@@ -221,7 +228,57 @@ const TrelloNavbar = () => {
           </Dropdown.Menu>
         </Dropdown>
       </Nav>
+      <>
+        <CreateBoardBottomSheet
+          isOpen={isBoardBottomSheetOpen}
+          closeHandler={() => setIsBoardBottomSheetOpen(false)}
+        />
+      </>
     </Navbar>
+  );
+};
+
+const CreateBoardBottomSheet: React.FC<{
+  isOpen: boolean;
+  closeHandler(): void;
+}> = ({ isOpen, closeHandler }) => {
+  return (
+    <BottomSheet
+      open={isOpen}
+      className={styles.BottomSheet}
+      onDismiss={closeHandler}
+      expandOnContentDrag
+    >
+      <Container>
+        <Container style={{ height: 20 }}></Container>
+        <Form style={{ color: "#9fadbc" }}>
+          <Form.Label className="w-100 fs-5 text-center fw-bold">
+            Create Board
+          </Form.Label>
+          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Label className="fw-bold">Board Title:</Form.Label>
+            <Form.Control type="text" placeholder="Kanban" />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+            <Form.Label className="fw-bold">Example textarea</Form.Label>
+            <Form.Control as="textarea" rows={3} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Select aria-label="Default select example">
+              <option>Open this select menu</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </Form.Select>
+          </Form.Group>
+
+          <Button variant="primary" type="submit" className="w-100">
+            Submit
+          </Button>
+        </Form>
+        <Container style={{ height: 50 }}></Container>
+      </Container>
+    </BottomSheet>
   );
 };
 
