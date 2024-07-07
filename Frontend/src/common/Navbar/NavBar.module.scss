@@ -267,10 +267,8 @@
   --rsbs-mr: auto;
 }
 
-.customInput {
-  &::placeholder {
-    color: white;
-  }
+.placeholderColor::placeholder {
+  color: #ced4da !important; /* Adjust this to your desired placeholder color */
 }
 
 

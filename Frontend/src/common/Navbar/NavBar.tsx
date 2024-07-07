@@ -277,7 +277,7 @@ const CreateWorkspaceBottomSheet: React.FC<{
               placeholder="Kanban"
               value={boardTitle}
               onChange={(e) => setBoardTitle(e.target.value)}
-              className={styles.darkTextField}
+              className={styles.placeholderColor}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="boardDescription">
@@ -288,7 +288,7 @@ const CreateWorkspaceBottomSheet: React.FC<{
               placeholder="Board description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className={styles.darkTextField}
+              className={styles.placeholderColor}
             />
           </Form.Group>
           <Button variant="primary" type="button" className="w-100" onClick={handleCreate}>
@@ -335,6 +335,7 @@ const CreateBoardBottomSheet: React.FC<{
               placeholder="Kanban"
               value={boardTitle}
               onChange={(e) => setBoardTitle(e.target.value)}
+              className={styles.placeholderColor}
             />
           </Form.Group>
           <Form.Group  className="mb-3" controlId="boardVisibility">
