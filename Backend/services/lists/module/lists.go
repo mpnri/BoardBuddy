@@ -5,6 +5,7 @@ import (
 	listsUtils "board-buddy/services/lists/utils"
 	users "board-buddy/services/users/module"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -66,17 +67,24 @@ func NewListsModule(db *gorm.DB, usersModule *users.UsersModule) *ListsModule {
 // 	}, nil
 // }
 
-func (m *ListsModule) CreateList(ctx echo.Context, data *models.ApiList, userUD uint) (*models.List, *echo.HTTPError) {
+func (m *ListsModule) CreateList(ctx echo.Context, data *models.ApiList, userUD uint) (*models.ApiList, *echo.HTTPError) {
 	//todo: check if the user is a member of board and workspace
 	// user, err := m.usersModule.GetUserByID(ctx, data.OwnerID)
 	// if err != nil {
 	// 	return nil, echo.NewHTTPError(http.StatusBadRequest, err)
 	// }
-	maxOrder := 0
-	if res := m.db.Model(&models.List{}).Select("MAX(order)").Scan(&maxOrder); res.Error != nil {
+	cnt := int64(0)
+	if res := m.db.Model(&models.List{}).Count(&cnt); res.Error != nil {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, res.Error.Error())
-	} else if res.RowsAffected == 0 {
-		maxOrder = 0
+	}
+	maxOrder := 0
+	fmt.Println(cnt)
+	if cnt > 0 {
+		if res := m.db.Table("lists").Select("MAX(lists.order)").Scan(&maxOrder); res.Error != nil {
+			return nil, echo.NewHTTPError(http.StatusInternalServerError, res.Error.Error())
+		} else if res.RowsAffected == 0 {
+			maxOrder = 0
+		}
 	}
 
 	data.Order = uint(maxOrder) + 1
@@ -84,7 +92,7 @@ func (m *ListsModule) CreateList(ctx echo.Context, data *models.ApiList, userUD 
 	if res := m.db.Create(&newList); res.Error != nil {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, res.Error.Error())
 	}
-	return &newList, nil
+	return listsUtils.MapListToApiList(newList), nil
 }
 
 func (m *ListsModule) DeleteList(ctx echo.Context, userID uint, lID uint) *echo.HTTPError {

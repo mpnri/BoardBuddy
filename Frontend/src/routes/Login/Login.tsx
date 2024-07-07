@@ -8,6 +8,7 @@ import { AuthState } from "../../auth/auth.utils";
 import { AuthAPI } from "../../auth/auth.api";
 import { AuthActions } from "../../auth/auth.slice";
 import { UsersActions } from "../../users/users.slice";
+import { toast } from "react-toastify";
 
 export const Login: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -69,13 +70,16 @@ export const Login: React.FC = () => {
     setError("");
     AuthAPI.loginUser({ email, password })
       .then((user) => {
+        toast.success("Logined successfully!");
         setTimeout(() => {
           dispatch(AuthActions.setAuthenticatedUser(user));
           dispatch(UsersActions.setUsers([user]));
           navigate(AppRoutes.Home);
         }, 500);
       })
-      .catch(() => {});
+      .catch((err) => {
+        toast.error("Error: " + String(err));
+      });
   };
 
   return (

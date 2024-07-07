@@ -40,8 +40,8 @@ func (u *CardsHandlerImpl) CreateCard(ctx echo.Context) error {
 		return ctx.JSON(http.StatusUnprocessableEntity, err)
 	}
 	req.Card.CreatorID = userID
-	_, err := u.cardsModule.CreateCard(ctx, &req.Card)
-	return utils.HandleEchoResponse(ctx, "ok", err)
+	card, err := u.cardsModule.CreateCard(ctx, &req.Card)
+	return utils.HandleEchoResponse(ctx, NewCreateCardResponse(card), err)
 }
 
 func (u *CardsHandlerImpl) DeleteCard(ctx echo.Context) error {

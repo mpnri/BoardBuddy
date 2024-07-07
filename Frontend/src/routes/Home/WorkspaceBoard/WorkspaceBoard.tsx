@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { useAppSelector } from "../../../utils/hooks.store";
 import { useNavigate } from "react-router-dom";
 import { AppRoutes } from "~/routes/utils";
+import { BoardsAPI } from "~/boards/boards.api";
 
 const colors = ["#607D8B", "#C2185B", "#5B6F91", "rgba(161, 189, 217, 0.08"];
 
@@ -21,7 +22,16 @@ const Dashboard = () => {
   const workspacesMap = useAppSelector((state) => state.workspaces.workspaces);
 
   return (
-    <Container fluid className={styles.Dashboard}>
+    <Container
+      fluid
+      className={styles.Dashboard}
+      onClick={() => {
+        BoardsAPI.createBoard({ name: "Season 3", workspaceID: 5 });
+        BoardsAPI.createBoard({ name: "Season 4", workspaceID: 5 });
+        BoardsAPI.createBoard({ name: "Week 1", workspaceID: 6 });
+        BoardsAPI.createBoard({ name: "Week 2", workspaceID: 6 });
+      }}
+    >
       <Row className="mb-4">
         <Col xs={12}>
           <h4>Recently Viewed</h4>

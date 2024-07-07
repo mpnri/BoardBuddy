@@ -2,7 +2,8 @@ export interface ApiCard {
   id: number;
   title: string;
   description: string;
-	boardID: number;
+  boardID: number;
   creatorID: number;
-  listID: number;	
+  listID: number;
+  order: number;
 }

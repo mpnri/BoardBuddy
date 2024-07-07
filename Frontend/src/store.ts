@@ -3,6 +3,8 @@ import { AuthReducers } from "./auth/auth.slice";
 import { UsersReducers } from "./users/users.slice";
 import { enableMapSet } from "immer";
 import { WorkspacesReducers } from "./workspaces/workspaces.slice";
+import { ListsReducers } from "./lists/lists.slice";
+import { BoardsReducers } from "./boards/boards.slice";
 enableMapSet();
 
 export const store = configureStore({
@@ -10,6 +12,8 @@ export const store = configureStore({
     users: UsersReducers,
     auth: AuthReducers,
     workspaces: WorkspacesReducers,
+    boards: BoardsReducers,
+    lists: ListsReducers,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),

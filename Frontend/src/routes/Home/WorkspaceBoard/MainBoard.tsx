@@ -31,7 +31,7 @@ const MainLayout: React.FC = () => {
     WorkspacesAPI.loadAllWorkspace({}).then((workspaces) => {
       dispatch(WorkspacesActions.setWorkspaces(workspaces));
       dispatch(
-        BoardsActions.setBoards(
+        BoardsActions.setNewBoards(
           workspaces
             .map((w) => w.boards)
             .reduce((prev, curr) => {

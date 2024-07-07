@@ -40,8 +40,8 @@ func (u *ListsHandlerImpl) CreateList(ctx echo.Context) error {
 		return ctx.JSON(http.StatusUnprocessableEntity, err)
 	}
 
-	_, err := u.listsModule.CreateList(ctx, &req.List, userID)
-	return utils.HandleEchoResponse(ctx, "ok", err)
+	list, err := u.listsModule.CreateList(ctx, &req.List, userID)
+	return utils.HandleEchoResponse(ctx, NewCreateListResponse(list), err)
 }
 
 func (u *ListsHandlerImpl) DeleteList(ctx echo.Context) error {
