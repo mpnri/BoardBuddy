@@ -262,8 +262,14 @@
 
 .BottomSheet {
   --rsbs-bg: #282e33;
-
   --rsbs-max-w: 400px;
   --rsbs-ml: auto;
   --rsbs-mr: auto;
 }
+
+.placeholderColor::placeholder {
+  color: #909497 !important; /* Adjust this to your desired placeholder color */
+}
+
+
+

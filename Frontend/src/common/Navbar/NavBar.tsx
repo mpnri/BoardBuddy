@@ -7,6 +7,7 @@ import {
   Form,
   FormControl,
   Container,
+  Modal,
 } from "react-bootstrap";
 import {
   FaRegBell,
@@ -26,6 +27,10 @@ import { AuthActions } from "~/auth/auth.slice";
 import { useNavigate } from "react-router-dom";
 import { AppRoutes } from "~/routes/utils";
 import { BottomSheet } from "react-spring-bottom-sheet";
+import { workspacesSelector } from "~/workspaces/workspaces.selector";
+import { BoardsAPI } from "~/boards/boards.api";
+import { toast } from "react-toastify";
+import { WorkspacesAPI } from "~/workspaces/workspaces.api";
 
 const TrelloNavbar = () => {
   const dispatch = useAppDispatch();
@@ -42,6 +47,8 @@ const TrelloNavbar = () => {
   }, [dispatch, navigate]);
 
   const [isBoardBottomSheetOpen, setIsBoardBottomSheetOpen] = useState(false);
+  const [isWorkspaceBottomSheetOpen, setIsWorkspaceBottomSheetOpen] =
+    useState(false);
 
   return (
     <Navbar variant="dark" expand="lg" className={styles.TrelloNavbar}>
@@ -144,6 +151,7 @@ const TrelloNavbar = () => {
                   <div
                     style={{ fontWeight: "bold" }}
                     className={styles.menuItemTitle}
+                    onClick={() => setIsWorkspaceBottomSheetOpen(true)}
                   >
                     Create a Workspace
                   </div>
@@ -233,15 +241,34 @@ const TrelloNavbar = () => {
           isOpen={isBoardBottomSheetOpen}
           closeHandler={() => setIsBoardBottomSheetOpen(false)}
         />
+        <CreateWorkspaceBottomSheet
+          isOpen={isWorkspaceBottomSheetOpen}
+          closeHandler={() => setIsWorkspaceBottomSheetOpen(false)}
+        />
       </>
     </Navbar>
   );
 };
-
-const CreateBoardBottomSheet: React.FC<{
+const CreateWorkspaceBottomSheet: React.FC<{
   isOpen: boolean;
   closeHandler(): void;
 }> = ({ isOpen, closeHandler }) => {
+  const [workspaceTitle, setWorkspaceTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  const handleCreate = () => {
+    console.log(`Board Title: ${workspaceTitle}, Description: ${description}`);
+    WorkspacesAPI.createWorkspace({ name: workspaceTitle, description })
+      .then(() => {
+        toast.success("Board created successfully");
+        closeHandler();
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Some Problem occurred");
+      });
+  };
+
   return (
     <BottomSheet
       open={isOpen}
@@ -249,31 +276,133 @@ const CreateBoardBottomSheet: React.FC<{
       onDismiss={closeHandler}
       expandOnContentDrag
     >
-      <Container>
-        <Container style={{ height: 20 }}></Container>
+      <Container className="p-4">
+        <Container style={{ height: 15 }}></Container>
         <Form style={{ color: "#9fadbc" }}>
+          <Form.Label className="w-100 fs-5 text-center fw-bold pb-2">
+            Create Workspace
+          </Form.Label>
+          <Form.Group className="mb-3" controlId="boardTitle">
+            <Form.Label className="fw-bold">Workspace Title:</Form.Label>
+            <Form.Control
+              style={{
+                backgroundColor: "#343a40",
+                color: "#ced4da",
+                border: "none",
+              }}
+              type="text"
+              placeholder="Management"
+              value={workspaceTitle}
+              onChange={(e) => setWorkspaceTitle(e.target.value)}
+              className={styles.placeholderColor}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="boardDescription">
+            <Form.Label className="fw-bold">Description:</Form.Label>
+            <Form.Control
+              style={{
+                backgroundColor: "#343a40",
+                color: "#ced4da",
+                border: "none",
+              }}
+              as="textarea"
+              placeholder="Workspace description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className={styles.placeholderColor}
+            />
+          </Form.Group>
+          <Button
+            variant="primary"
+            type="button"
+            className="w-100"
+            onClick={handleCreate}
+          >
+            Create
+          </Button>
+        </Form>
+        <Container style={{ height: 50 }}></Container>
+      </Container>
+    </BottomSheet>
+  );
+};
+
+const CreateBoardBottomSheet: React.FC<{
+  isOpen: boolean;
+  closeHandler(): void;
+}> = ({ isOpen, closeHandler }) => {
+  const [boardTitle, setBoardTitle] = useState("");
+  const [workspace, setWorkspace] = useState(0);
+
+  const handleCreate = () => {
+    // console.log(`Board Title: ${boardTitle}, Visibility: ${visibility}`);
+    BoardsAPI.createBoard({ name: boardTitle, workspaceID: workspace })
+      .then(() => {
+        toast.success("Board created successfully");
+        closeHandler();
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Some Problem occurred");
+      });
+  };
+  const workspaceMap = useAppSelector(workspacesSelector);
+  const workspaces = Array.from(workspaceMap.values());
+
+  return (
+    <BottomSheet
+      open={isOpen}
+      className={styles.BottomSheet}
+      onDismiss={closeHandler}
+      expandOnContentDrag
+    >
+      <Container className="p-4">
+        <Container style={{ height: 20 }}></Container>
+        <Form style={{ color: "#9fadbc" }} onSubmit={handleCreate}>
           <Form.Label className="w-100 fs-5 text-center fw-bold">
             Create Board
           </Form.Label>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+          <Form.Group className="mb-3" controlId="boardTitle">
             <Form.Label className="fw-bold">Board Title:</Form.Label>
-            <Form.Control type="text" placeholder="Kanban" />
+            <Form.Control
+              style={{
+                backgroundColor: "#343a40",
+                color: "#ced4da",
+                border: "none",
+              }}
+              type="text"
+              placeholder="Kanban"
+              value={boardTitle}
+              onChange={(e) => setBoardTitle(e.target.value)}
+              className={styles.placeholderColor}
+            />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-            <Form.Label className="fw-bold">Example textarea</Form.Label>
-            <Form.Control as="textarea" rows={3} />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Select aria-label="Default select example">
-              <option>Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+          <Form.Group className="mb-3" controlId="boardVisibility">
+            <Form.Label className="fw-bold">Workspace:</Form.Label>
+            <Form.Select
+              style={{
+                backgroundColor: "#343a40",
+                color: "#ced4da",
+                border: "none",
+              }}
+              aria-label="Default select example"
+              value={workspace}
+              onChange={(e) => setWorkspace(+e.target.value)}
+            >
+              {workspaces.map((w) => (
+                <option key={w.id} value={w.id}>
+                  {w.name}
+                </option>
+              ))}
             </Form.Select>
           </Form.Group>
-
-          <Button variant="primary" type="submit" className="w-100">
-            Submit
+          <Button
+            variant="primary"
+            type="button"
+            className="w-100"
+            onClick={handleCreate}
+          >
+            Create
           </Button>
         </Form>
         <Container style={{ height: 50 }}></Container>

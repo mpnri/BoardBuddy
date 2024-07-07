@@ -5,7 +5,7 @@ export interface WorkspacesStore {
   workspaces: Map<number, ApiWorkspace>;
 }
 
-const initialState: WorkspacesStore = {  
+const initialState: WorkspacesStore = {
   workspaces: new Map(),
 };
 
