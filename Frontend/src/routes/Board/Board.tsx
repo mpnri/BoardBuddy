@@ -193,7 +193,7 @@ const Board: React.FC = () => {
             );
           })
           .catch((err) => {
-            toast.error("Some problem occurred");
+            toast.error("Some Problem occurred");
           });
       }
 
@@ -243,7 +243,7 @@ const Board: React.FC = () => {
           })
           .catch((err) => {
             console.log(err);
-            toast.error("Some problem occurred");
+            toast.error("Some Problem occurred");
           });
       }
 
@@ -277,7 +277,7 @@ const Board: React.FC = () => {
               .then((res) => {})
               .catch((err) => {
                 console.log(err);
-                toast.error("Some problem occurred");
+                toast.error("Some Problem occurred");
               })
           );
         } else {
@@ -287,7 +287,7 @@ const Board: React.FC = () => {
               .then((res) => {})
               .catch((err) => {
                 console.log(err);
-                toast.error("Some problem occurred");
+                toast.error("Some Problem occurred");
               })
           );
         }
